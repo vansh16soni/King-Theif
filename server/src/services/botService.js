@@ -22,7 +22,7 @@ Reply with ONE short chat message (max 20 words) in character. No preamble, no q
  * Generate a short in-character chat line for a bot.
  */
 async function generateBotChatMessage({ role, username, otherPlayers, personality, context }) {
-  if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY === 'sk-xxxx' || process.env.OPENAI_API_KEY.trim() === '') {
+  if (!openai) {
     return fallbackLine(personality);
   }
   try {
@@ -51,7 +51,7 @@ async function generateBotChatMessage({ role, username, otherPlayers, personalit
  */
 async function generateBotGuess({ username, personality, candidates, chatLog }) {
   const [a, b] = candidates;
-  if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY === 'sk-xxxx' || process.env.OPENAI_API_KEY.trim() === '') {
+  if (!openai) {
     return Math.random() < 0.5
       ? { sipahiPlayerId: a.playerId, chorPlayerId: b.playerId }
       : { sipahiPlayerId: b.playerId, chorPlayerId: a.playerId };
