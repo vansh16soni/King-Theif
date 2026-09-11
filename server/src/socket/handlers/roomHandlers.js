@@ -6,8 +6,10 @@ function registerRoomHandlers(io, socket) {
   // Client joins a room's socket.io channel + syncs in-memory state
   socket.on('room:join', async ({ roomCode }) => {
     try {
+      if (!roomCode) return socket.emit('error', { message: 'Castle room code is required' });
+
       const dbRoom = await Room.findOne({ roomCode });
-      if (!dbRoom) return socket.emit('error', { message: 'Room not found' });
+      if (!dbRoom) return socket.emit('error', { message: `Castle Chamber #${roomCode} not found` });
 
       socket.join(roomCode);
       socket.data.roomCode = roomCode;
@@ -35,16 +37,54 @@ function registerRoomHandlers(io, socket) {
         });
       }
 
-      // Attach this socket's id to the matching player entry
-      const player = memRoom.players.find(p => String(p.userId) === String(socket.userId));
-      if (player) player.socketId = socket.id;
-      if (memRoom.scores[socket.userId] === undefined) memRoom.scores[socket.userId] = 0;
+      // Check if this player is already in the room
+      let player = memRoom.players.find(p => String(p.userId) === String(socket.userId));
+      if (player) {
+        player.socketId = socket.id;
+        player.username = socket.username;
+      } else {
+        // Player is newly joining this room
+        if (memRoom.status !== 'waiting') {
+          return socket.emit('error', { message: 'This castle match has already commenced' });
+        }
+        if (memRoom.players.length >= (memRoom.maxPlayers || 4)) {
+          return socket.emit('error', { message: 'Castle chamber is already full (max 4 nobles)' });
+        }
 
-      io.to(roomCode).emit('room:player_joined', { player: player || { username: socket.username } });
+        player = {
+          userId: String(socket.userId),
+          username: socket.username,
+          isBot: false,
+          personality: null,
+          socketId: socket.id,
+          isReady: true
+        };
+        memRoom.players.push(player);
+
+        // Also persist in MongoDB if not present
+        if (!dbRoom.players.some(p => String(p.userId) === String(socket.userId))) {
+          dbRoom.players.push({
+            userId: socket.userId,
+            username: socket.username,
+            isBot: false,
+            isReady: true
+          });
+          dbRoom.lastActivity = new Date();
+          await dbRoom.save();
+        }
+      }
+
+      const playerKey = socket.userId || socket.id;
+      if (memRoom.scores[playerKey] === undefined) {
+        memRoom.scores[playerKey] = 0;
+      }
+
+      io.to(roomCode).emit('room:player_joined', { player });
       io.to(roomCode).emit('room:update', { room: memRoom });
       socket.emit('room:joined', { roomCode, players: memRoom.players, hostId: String(memRoom.hostId) });
     } catch (err) {
-      socket.emit('error', { message: err.message });
+      console.error('Socket room:join error:', err);
+      socket.emit('error', { message: err.message || 'Failed to join castle chamber' });
     }
   });
 

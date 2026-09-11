@@ -27,39 +27,39 @@ export default function Login() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-[82vh] px-4 py-8">
-      <div className="w-full max-w-md royal-glass p-8 rounded-3xl shadow-2xl relative overflow-hidden">
+    <div className="flex items-center justify-center min-h-[80vh] px-4 py-8">
+      <div className="w-full max-w-md royal-glass p-8 rounded-3xl shadow-castle-card relative overflow-hidden">
         {/* Ornate Gold Border Accent */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-amber-400 to-transparent" />
-        <div className="absolute -top-12 -right-12 w-32 h-32 bg-amber-500/10 rounded-full blur-2xl" />
+        <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500" />
+        <div className="absolute -top-12 -right-12 w-32 h-32 bg-amber-400/10 rounded-full blur-2xl pointer-events-none" />
 
         <div className="text-center space-y-2 mb-6">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-600 via-amber-400 to-yellow-200 p-[1px] mx-auto shadow-xl shadow-amber-500/20">
-            <div className="w-full h-full bg-[#160e29] rounded-2xl flex items-center justify-center text-3xl">
-              👑
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-600 via-amber-400 to-yellow-200 p-[2px] mx-auto shadow-md">
+            <div className="w-full h-full bg-[#fef9ee] rounded-[14px] flex items-center justify-center text-3xl shadow-inner">
+              🏰
             </div>
           </div>
           <h1 className="text-2xl font-cinzel font-black gold-gradient-text tracking-wide uppercase mt-2">
-            Royal Court Entrance
+            Castle Gate Entrance
           </h1>
-          <p className="text-xs text-amber-200/60 font-medium">
-            Enter your noble credentials to access the Darbar
+          <p className="text-xs text-[#6b513c] font-medium">
+            Enter your noble credentials to access the Grand Darbar
           </p>
         </div>
 
         {error && (
-          <div className="p-3 mb-4 bg-red-950/60 border border-red-500/50 rounded-xl text-red-200 text-xs text-center font-medium">
+          <div className="p-3 mb-4 bg-red-50 border-2 border-red-300 rounded-xl text-red-900 text-xs text-center font-bold">
             ⚠️ {error}
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-cinzel font-bold text-amber-300 uppercase tracking-wider mb-1.5">
+            <label className="block text-xs font-cinzel font-bold text-[#78350f] uppercase tracking-wider mb-1.5">
               Player Moniker
             </label>
             <input
-              className="w-full px-4 py-3 rounded-xl bg-[#0e081c] border border-amber-500/30 focus:outline-none focus:border-amber-400 text-white placeholder-slate-500 text-sm shadow-inner transition"
+              className="w-full px-4 py-3 rounded-xl bg-[#fefaf2] border-2 border-[#dccab0] focus:outline-none focus:border-amber-500 text-[#2c1a0e] placeholder-[#a68c74] text-sm shadow-inner font-medium transition"
               placeholder="e.g. MaharajaVansh"
               value={username}
               onChange={e => setUsername(e.target.value)}
@@ -68,11 +68,11 @@ export default function Login() {
           </div>
 
           <div>
-            <label className="block text-xs font-cinzel font-bold text-amber-300 uppercase tracking-wider mb-1.5">
+            <label className="block text-xs font-cinzel font-bold text-[#78350f] uppercase tracking-wider mb-1.5">
               Secret Cipher
             </label>
             <input
-              className="w-full px-4 py-3 rounded-xl bg-[#0e081c] border border-amber-500/30 focus:outline-none focus:border-amber-400 text-white placeholder-slate-500 text-sm shadow-inner transition"
+              className="w-full px-4 py-3 rounded-xl bg-[#fefaf2] border-2 border-[#dccab0] focus:outline-none focus:border-amber-500 text-[#2c1a0e] placeholder-[#a68c74] text-sm shadow-inner font-medium transition"
               type="password"
               placeholder="••••••••••••"
               value={password}
@@ -83,14 +83,14 @@ export default function Login() {
 
           <button
             disabled={loading}
-            className="w-full py-3.5 royal-btn-gold rounded-xl font-cinzel font-black text-sm uppercase tracking-wider mt-2 transition disabled:opacity-50"
+            className="w-full py-4 royal-btn-gold rounded-xl font-cinzel font-black text-sm uppercase tracking-wider mt-2 transition disabled:opacity-50 shadow-gold-glow"
           >
-            {loading ? 'Opening Castle Gates...' : 'Enter Kingdom 🏰'}
+            {loading ? 'Opening Castle Gates...' : 'Enter Castle Kingdom 🏰'}
           </button>
 
-          <p className="text-xs text-center text-slate-400 pt-2">
+          <p className="text-xs text-center text-[#6b513c] pt-2 font-medium">
             No royal title yet?{' '}
-            <Link to="/register" className="text-amber-400 font-bold hover:underline">
+            <Link to="/register" className="text-[#92400e] font-black underline hover:text-[#78350f]">
               Request Court Knighthood
             </Link>
           </p>

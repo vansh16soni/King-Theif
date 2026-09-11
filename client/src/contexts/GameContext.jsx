@@ -23,17 +23,18 @@ const initialState = {
   scores: {},
   winner: null,
   chatMessages: [],
-  botThinking: null
+  botThinking: null,
+  error: null
 };
 
 function reducer(state, action) {
   switch (action.type) {
     case 'ROOM_JOINED':
-      return { ...state, roomCode: action.roomCode, players: action.players, hostId: action.hostId ? String(action.hostId) : state.hostId };
+      return { ...state, roomCode: action.roomCode, players: action.players, hostId: action.hostId ? String(action.hostId) : state.hostId, error: null };
     case 'ROOM_UPDATE':
-      return { ...state, players: action.room.players, status: action.room.status, hostId: action.room.hostId ? String(action.room.hostId) : state.hostId };
+      return { ...state, players: action.room.players, status: action.room.status, hostId: action.room.hostId ? String(action.room.hostId) : state.hostId, error: null };
     case 'GAME_STARTED':
-      return { ...state, status: 'playing', players: action.players, totalRounds: action.totalRounds, winner: null };
+      return { ...state, status: 'playing', players: action.players, totalRounds: action.totalRounds, winner: null, error: null };
     case 'ROUND_START':
       return {
         ...state,
@@ -44,7 +45,8 @@ function reducer(state, action) {
         isMantriTurn: false,
         isTimeout: false,
         guessDeadline: null,
-        nextRoundIn: null
+        nextRoundIn: null,
+        error: null
       };
     case 'RAJA_REVEALED':
       return { ...state, rajaPlayer: action.rajaPlayer };
@@ -79,6 +81,10 @@ function reducer(state, action) {
       return { ...state, chatMessages: [...state.chatMessages, { ...action, kind: 'message' }].slice(-100) };
     case 'CHAT_EMOTE':
       return { ...state, chatMessages: [...state.chatMessages, { ...action, kind: 'emote' }].slice(-100) };
+    case 'GAME_ERROR':
+      return { ...state, error: action.message || 'An error occurred in the castle chamber' };
+    case 'CLEAR_ERROR':
+      return { ...state, error: null };
     case 'RESET':
       return initialState;
     default:
@@ -94,6 +100,7 @@ export function GameProvider({ children }) {
     if (!socket) return;
 
     const listeners = {
+      'error': (d) => dispatch({ type: 'GAME_ERROR', ...d }),
       'room:joined': (d) => dispatch({ type: 'ROOM_JOINED', ...d }),
       'room:update': (d) => dispatch({ type: 'ROOM_UPDATE', ...d }),
       'game:started': (d) => dispatch({ type: 'GAME_STARTED', ...d }),

@@ -1,5 +1,5 @@
 import React from 'react';
 
 export default function BotBadge() {
-  return <span className="text-xs bg-slate-700 px-1.5 py-0.5 rounded ml-1">🤖 Bot</span>;
+  return <span className="text-[10px] bg-purple-100 text-purple-900 border border-purple-300 font-bold px-2 py-0.5 rounded-full shadow-sm ml-1">🤖 Bot</span>;
 }

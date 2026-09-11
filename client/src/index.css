@@ -4,54 +4,128 @@
 
 @layer base {
   body {
-    background-color: #08050e;
-    background-image: 
-      radial-gradient(at 50% 0%, rgba(245, 158, 11, 0.12) 0px, transparent 60%),
-      radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.08) 0px, transparent 50%),
-      radial-gradient(at 0% 100%, rgba(225, 29, 72, 0.06) 0px, transparent 50%);
+    background-color: #f6efe0;
+    /* Rich Medieval Castle Stone Masonry & Parchment Ambient Lighting */
+    background-image:
+      radial-gradient(ellipse at 50% -10%, rgba(217, 119, 6, 0.15) 0%, transparent 60%),
+      radial-gradient(ellipse at 95% 85%, rgba(180, 83, 9, 0.08) 0%, transparent 45%),
+      radial-gradient(ellipse at 5% 90%, rgba(120, 53, 15, 0.06) 0%, transparent 45%),
+      /* Castle Stone Masonry Grid Texture */
+      linear-gradient(rgba(180, 150, 110, 0.12) 1.5px, transparent 1.5px),
+      linear-gradient(90deg, rgba(180, 150, 110, 0.12) 1.5px, transparent 1.5px),
+      /* Antique Parchment Grain */
+      radial-gradient(#d6c099 0.85px, transparent 0.85px);
+    background-size: 100% 100%, 100% 100%, 100% 100%, 120px 60px, 120px 60px, 16px 16px;
+    background-position: 0 0, 0 0, 0 0, 0 0, 0 0, 0 0;
     background-attachment: fixed;
-    color: #f5f0e6;
+    color: #2c1a0e;
+    font-family: 'Plus Jakarta Sans', sans-serif;
   }
 }
 
-/* Royal Ornate Borders & Cards */
+/* Castle Wall Pattern Utility */
+.castle-wall-bg {
+  background-color: #f6efe0;
+  background-image:
+    radial-gradient(ellipse at 50% 0%, rgba(217, 119, 6, 0.12) 0%, transparent 65%),
+    linear-gradient(rgba(180, 150, 110, 0.10) 1.5px, transparent 1.5px),
+    linear-gradient(90deg, rgba(180, 150, 110, 0.10) 1.5px, transparent 1.5px),
+    radial-gradient(#d6c099 0.85px, transparent 0.85px);
+  background-size: 100% 100%, 120px 60px, 120px 60px, 16px 16px;
+  background-attachment: fixed;
+}
+
+/* Creamy Castle Parchment & Glass Cards */
 .royal-glass {
-  background: rgba(20, 14, 36, 0.85);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(234, 179, 8, 0.25);
-  box-shadow: 0 12px 36px -8px rgba(0, 0, 0, 0.8), 0 0 1px 1px rgba(234, 179, 8, 0.2);
+  background: rgba(255, 252, 244, 0.92);
+  backdrop-filter: blur(14px);
+  border: 1.5px solid rgba(197, 160, 89, 0.45);
+  box-shadow: 
+    0 14px 38px -6px rgba(74, 48, 24, 0.14),
+    0 2px 8px 0 rgba(74, 48, 24, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 0 0 1px rgba(212, 175, 55, 0.15);
 }
 
 .royal-glass-hover {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .royal-glass-hover:hover {
-  border-color: rgba(234, 179, 8, 0.5);
-  box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.9), 0 0 20px -2px rgba(234, 179, 8, 0.3);
+  border-color: rgba(180, 83, 9, 0.55);
+  box-shadow: 
+    0 18px 42px -8px rgba(74, 48, 24, 0.2),
+    0 0 20px -2px rgba(217, 119, 6, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 1);
   transform: translateY(-2px);
 }
 
+/* Castle Scroll & Inset Parchment */
+.parchment-inset {
+  background: #fbf5e6;
+  border: 1px solid rgba(197, 160, 89, 0.35);
+  box-shadow: inset 0 2px 5px rgba(74, 48, 24, 0.08);
+}
+
+.stone-panel {
+  background: linear-gradient(135deg, #f7efe1 0%, #ebe0cd 100%);
+  border: 1px solid #d4c2a3;
+  box-shadow: 0 4px 12px rgba(74, 48, 24, 0.08);
+}
+
+/* Castle Typography & Gold Text */
 .gold-gradient-text {
-  background: linear-gradient(135deg, #fff7c2 0%, #f59e0b 50%, #d97706 100%);
+  background: linear-gradient(135deg, #78350f 0%, #b45309 45%, #d97706 70%, #92400e 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 1px 1px rgba(255, 255, 255, 0.8));
+}
+
+.gold-gradient-subtle {
+  background: linear-gradient(135deg, #92400e 0%, #b45309 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
+/* Royal Gold Bullion Button */
 .royal-btn-gold {
-  background: linear-gradient(135deg, #fef08a 0%, #f59e0b 50%, #b45309 100%);
-  color: #1a0f00;
+  background: linear-gradient(135deg, #fef08a 0%, #f59e0b 45%, #b45309 100%);
+  color: #1a0f02;
   font-weight: 800;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
-  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.6);
-  transition: all 0.2s ease;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(217, 119, 6, 0.6);
+  box-shadow: 
+    0 4px 16px rgba(180, 83, 9, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .royal-btn-gold:hover:not(:disabled) {
-  background: linear-gradient(135deg, #fffbeb 0%, #fbbf24 50%, #d97706 100%);
-  box-shadow: 0 6px 22px rgba(245, 158, 11, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  background: linear-gradient(135deg, #fffbeb 0%, #fbbf24 45%, #d97706 100%);
+  box-shadow: 
+    0 6px 24px rgba(180, 83, 9, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
   transform: translateY(-1px);
 }
 .royal-btn-gold:active:not(:disabled) {
   transform: translateY(1px);
+  box-shadow: 0 2px 8px rgba(180, 83, 9, 0.3);
+}
+
+/* Castle Stone Button */
+.castle-btn-stone {
+  background: linear-gradient(180deg, #faf3e5 0%, #ede1cc 100%);
+  color: #3b2314;
+  border: 1.5px solid #cbba98;
+  font-weight: 700;
+  box-shadow: 0 2px 6px rgba(74, 48, 24, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  transition: all 0.2s ease;
+}
+.castle-btn-stone:hover:not(:disabled) {
+  background: linear-gradient(180deg, #fffdf8 0%, #f4e9d6 100%);
+  border-color: #bfa57c;
+  color: #1a0f07;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(74, 48, 24, 0.12);
 }
 
 /* Card 3D Flip System */
@@ -73,9 +147,25 @@
   transform: rotateY(180deg);
 }
 
-/* Royal Pattern Filigree */
-.filigree-bg {
-  background-color: #120b20;
-  background-image: radial-gradient(#2d1b4e 1px, transparent 1px);
-  background-size: 16px 16px;
+/* Wax Seal & Medieval Embellishments */
+.wax-seal {
+  background: radial-gradient(circle at 30% 30%, #dc2626, #7f1d1d);
+  box-shadow: 0 3px 10px rgba(153, 27, 27, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.3);
+}
+
+/* Custom Scrollbar for Castle Whispers */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(220, 205, 180, 0.3);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(180, 150, 110, 0.6);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(180, 83, 9, 0.8);
 }

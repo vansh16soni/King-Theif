@@ -12,8 +12,8 @@ export default function SoundToggle({ onChange }) {
   return (
     <button
       onClick={toggle}
-      className="px-2 py-1 text-sm bg-slate-700 hover:bg-slate-600 rounded-md"
-      title="Toggle sound effects"
+      className="px-2.5 py-1 text-sm castle-btn-stone rounded-xl shadow-sm"
+      title="Toggle castle sound effects"
     >
       {enabled ? '🔊' : '🔇'}
     </button>

@@ -26,9 +26,9 @@ function AdminRoute({ children }) {
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-slate-900 text-white">
+    <div className="min-h-screen castle-wall-bg text-[#2c1a0e] flex flex-col">
       <Navbar />
-      <main className="p-4 sm:p-6">
+      <main className="flex-1 p-4 sm:p-6">
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />

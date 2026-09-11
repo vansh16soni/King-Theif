@@ -14,7 +14,10 @@ const adminRoutes = require('./src/routes/adminRoutes');
 const app = express();
 const server = http.createServer(app);
 
-app.use(cors({ origin: process.env.CLIENT_URL || '*', credentials: true }));
+app.use(cors({
+  origin: (origin, callback) => callback(null, true),
+  credentials: true
+}));
 app.use(express.json());
 
 app.get('/api/health', (req, res) => res.json({ ok: true }));

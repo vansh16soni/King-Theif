@@ -1,7 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./index.html', './src/**/*.{js,jsx}'],
-  darkMode: 'class',
   theme: {
     extend: {
       fontFamily: {
@@ -10,28 +9,38 @@ export default {
         royal: ['"Cinzel Decorative"', '"Cinzel"', 'serif']
       },
       colors: {
-        raja: '#f59e0b',
-        mantri: '#8b5cf6',
+        raja: '#b45309',
+        mantri: '#7e22ce',
         sipahi: '#0284c7',
-        chor: '#e11d48',
-        'royal-bg': '#090611',
-        'royal-card': '#140e24',
-        'royal-border': '#392856',
-        'royal-gold': '#eab308',
-        'royal-crimson': '#881337',
-        'gold-shine': '#ffd700',
-        'parchment': '#fef3c7'
+        chor: '#be123c',
+        'castle-bg': '#f5eedc',
+        'castle-stone': '#e8dcc4',
+        'castle-mortar': '#d5c29f',
+        'castle-cream': '#fffdfa',
+        'castle-parchment': '#faf3e0',
+        'castle-vellum': '#f3e8cf',
+        'castle-ink': '#2c1a0e',
+        'castle-ink-muted': '#6b513c',
+        'royal-bg': '#f5eedc',
+        'royal-card': '#fffdfa',
+        'royal-border': '#d4af37',
+        'royal-gold': '#b45309',
+        'royal-crimson': '#991b1b',
+        'gold-shine': '#f59e0b',
+        'parchment': '#fbf5e6'
       },
       boxShadow: {
-        'gold-glow': '0 0 25px -5px rgba(234, 179, 8, 0.4)',
-        'mantri-glow': '0 0 25px -5px rgba(139, 92, 246, 0.4)',
-        'royal-card': '0 10px 30px -10px rgba(0, 0, 0, 0.7), 0 0 15px 0 rgba(234, 179, 8, 0.15)',
-        'regal': '0 20px 40px -15px rgba(0, 0, 0, 0.9), 0 0 20px 2px rgba(245, 158, 11, 0.2)'
+        'gold-glow': '0 0 25px -5px rgba(217, 119, 6, 0.4)',
+        'mantri-glow': '0 0 25px -5px rgba(126, 34, 206, 0.35)',
+        'castle-card': '0 12px 32px -8px rgba(74, 48, 24, 0.12), 0 2px 6px 0 rgba(74, 48, 24, 0.08)',
+        'castle-inner': 'inset 0 2px 4px 0 rgba(74, 48, 24, 0.06)',
+        'regal': '0 16px 36px -10px rgba(74, 48, 24, 0.25), 0 0 20px 2px rgba(217, 119, 6, 0.15)'
       },
       backgroundImage: {
-        'gold-gradient': 'linear-gradient(135deg, #fef08a 0%, #eab308 50%, #854d0e 100%)',
-        'royal-banner': 'linear-gradient(135deg, #1e1233 0%, #11091f 100%)',
-        'regal-glow': 'radial-gradient(ellipse at top, rgba(234, 179, 8, 0.15), transparent 70%)'
+        'gold-gradient': 'linear-gradient(135deg, #fef08a 0%, #f59e0b 50%, #b45309 100%)',
+        'parchment-gradient': 'linear-gradient(180deg, #fffdf8 0%, #f7efe1 100%)',
+        'stone-gradient': 'linear-gradient(135deg, #f3e9d7 0%, #e5d5be 100%)',
+        'castle-banner': 'linear-gradient(135deg, #faf2e3 0%, #ede0c7 100%)'
       }
     }
   },
