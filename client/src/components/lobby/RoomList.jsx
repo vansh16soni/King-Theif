@@ -1,9 +1,10 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import CreateRoom from './CreateRoom';
 import JoinRoom from './JoinRoom';
 import Breadcrumbs from '../common/Breadcrumbs';
 import { usePageMeta } from '../../hooks/usePageMeta';
-import { CrownIcon, ScaleIcon, ShieldIcon, KeyIcon, TrophyIcon } from '../common/Icons';
+import { CrownIcon, ScaleIcon, ShieldIcon, KeyIcon, TrophyIcon, BookOpenIcon } from '../common/Icons';
 
 export default function RoomList() {
   usePageMeta({
@@ -18,15 +19,24 @@ export default function RoomList() {
 
       {/* Lobby Banner Intro */}
       <div className="text-center space-y-2.5 relative">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 text-xs font-bold tracking-wider uppercase shadow-sm">
-          <TrophyIcon className="w-4 h-4 text-amber-400" />
-          <span>4-Player Social Deduction Game</span>
+        <div className="flex flex-wrap items-center justify-center gap-2">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-400 text-xs font-bold tracking-wider uppercase shadow-sm">
+            <TrophyIcon className="w-4 h-4 text-amber-400" />
+            <span>4-Player Social Deduction Game</span>
+          </div>
+          <Link
+            to="/guide"
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-500 text-xs font-bold transition shadow-sm"
+          >
+            <BookOpenIcon className="w-3.5 h-3.5 text-amber-500" />
+            <span>How to Play Guide</span>
+          </Link>
         </div>
         <h1 className="text-3xl sm:text-4xl font-black gold-gradient-text tracking-wide uppercase">
           Game Lobby
         </h1>
-        <p className="text-xs sm:text-sm text-slate-300 max-w-xl mx-auto font-medium leading-relaxed">
-          Create a private match room or join with a 4-digit code. Raja scores guaranteed points, Mantri deduces the Chor, Sipahi stays ready, and the Chor tries to bluff undetected!
+        <p className="text-xs sm:text-sm max-w-xl mx-auto font-medium leading-relaxed opacity-90">
+          Create a private match room or join with a 4-digit code. Raja scores guaranteed points, Mantri deduces the Chor in 25 seconds, Sipahi stays ready, and the Chor tries to bluff undetected!
         </p>
       </div>
 

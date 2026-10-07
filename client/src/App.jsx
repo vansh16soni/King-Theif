@@ -1,6 +1,7 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './contexts/AuthContext';
+import { useTheme } from './contexts/ThemeContext';
 import Navbar from './components/common/Navbar';
 import Footer from './components/common/Footer';
 import CookieConsent from './components/common/CookieConsent';
@@ -10,6 +11,7 @@ import Register from './components/auth/Register';
 import Profile from './components/auth/Profile';
 import RoomList from './components/lobby/RoomList';
 import GameRoom from './components/game/GameRoom';
+import GameGuide from './components/guide/GameGuide';
 import AdminDashboard from './components/admin/AdminDashboard';
 import AdminLogin from './components/admin/AdminLogin';
 import PrivacyPolicy from './components/legal/PrivacyPolicy';
@@ -27,13 +29,17 @@ function PrivateRoute({ children }) {
 
 function AdminRoute({ children }) {
   const adminToken = localStorage.getItem('rmcs_admin_token');
-  if (!adminToken) return <Navigate to="/admin/login" replace />;
+  if (!adminToken) return <Navigate to="/login" replace />;
   return children;
 }
 
 export default function App() {
+  const { isDark } = useTheme();
+
   return (
-    <div className="min-h-screen text-slate-100 flex flex-col relative selection:bg-amber-400 selection:text-black">
+    <div className={`min-h-screen flex flex-col relative selection:bg-amber-400 selection:text-black transition-colors duration-200 ${
+      isDark ? 'text-slate-100' : 'text-slate-900'
+    }`}>
       <ThreeBackground />
       <Navbar />
       <main className="flex-1 p-4 sm:p-6 flex flex-col relative z-10">
@@ -43,6 +49,11 @@ export default function App() {
           <Route path="/lobby" element={<PrivateRoute><RoomList /></PrivateRoute>} />
           <Route path="/room/:roomCode" element={<PrivateRoute><GameRoom /></PrivateRoute>} />
           <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
+          
+          {/* How-To-Play Game Guide */}
+          <Route path="/guide" element={<GameGuide />} />
+          <Route path="/rules" element={<Navigate to="/guide" replace />} />
+          <Route path="/how-to-play" element={<Navigate to="/guide" replace />} />
           
           {/* Public Legal & Compliance Routes */}
           <Route path="/privacy" element={<PrivacyPolicy />} />

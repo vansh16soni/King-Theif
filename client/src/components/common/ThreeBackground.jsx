@@ -20,11 +20,11 @@ export default function ThreeBackground() {
         planeMatRef.current.opacity = 0.28;
       }
     } else {
-      sceneRef.current.fog.color.setHex(0xe2e8f0);
-      if (ambientLightRef.current) ambientLightRef.current.intensity = 1.4;
+      sceneRef.current.fog.color.setHex(0xf8fafc);
+      if (ambientLightRef.current) ambientLightRef.current.intensity = 1.3;
       if (planeMatRef.current) {
-        planeMatRef.current.color.setHex(0x94a3b8);
-        planeMatRef.current.opacity = 0.45;
+        planeMatRef.current.color.setHex(0xcbd5e1);
+        planeMatRef.current.opacity = 0.4;
       }
     }
   }, [isDark]);
@@ -58,7 +58,7 @@ export default function ThreeBackground() {
     // Scene & Camera
     const scene = new THREE.Scene();
     sceneRef.current = scene;
-    scene.fog = new THREE.FogExp2(isDark ? 0x0a0e1a : 0xe2e8f0, 0.015);
+    scene.fog = new THREE.FogExp2(isDark ? 0x0a0e1a : 0xf8fafc, 0.015);
 
     const camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000);
     camera.position.set(0, 0, 32);
@@ -239,10 +239,10 @@ export default function ThreeBackground() {
     planeGeo.translate(0, -18, -10);
 
     const planeMat = new THREE.MeshBasicMaterial({
-      color: isDark ? 0x1e293b : 0x94a3b8,
+      color: isDark ? 0x1e293b : 0xcbd5e1,
       wireframe: true,
       transparent: true,
-      opacity: isDark ? 0.28 : 0.45
+      opacity: isDark ? 0.28 : 0.4
     });
     planeMatRef.current = planeMat;
 
@@ -364,13 +364,13 @@ export default function ThreeBackground() {
     <div
       ref={mountRef}
       className={`fixed inset-0 pointer-events-none -z-10 overflow-hidden transition-colors duration-500 ${
-        isDark ? 'bg-[#090d16]' : 'bg-[#e2e8f0]'
+        isDark ? 'bg-[#090d16]' : 'bg-[#f8fafc]'
       }`}
       aria-hidden="true"
     >
       {/* Dynamic vignette overlay */}
       <div className={`absolute inset-0 transition-opacity duration-500 pointer-events-none ${
-        isDark ? 'opacity-70 bg-black/40' : 'opacity-30 bg-slate-200/50'
+        isDark ? 'opacity-70 bg-black/40' : 'opacity-20 bg-amber-500/5'
       }`} />
     </div>
   );

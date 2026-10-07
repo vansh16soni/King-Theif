@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
-import { CrownIcon, UserIcon, TrophyIcon, ShieldIcon } from './Icons';
+import { CrownIcon, UserIcon, TrophyIcon, BookOpenIcon } from './Icons';
 import ThemeToggle from './ThemeToggle';
 
 export default function Navbar() {
@@ -46,6 +46,19 @@ export default function Navbar() {
 
         {/* Navigation Actions */}
         <div className="flex items-center gap-2 sm:gap-3">
+          {/* Guide link accessible to everyone */}
+          <button
+            onClick={() => navigate('/guide')}
+            className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition flex items-center gap-1.5 focus-visible:ring-2 focus-visible:ring-amber-500 ${
+              isActive('/guide')
+                ? 'bg-amber-500/20 text-amber-400 border border-amber-500/40 shadow-sm'
+                : isDark ? 'text-slate-300 hover:text-white hover:bg-white/10' : 'text-slate-700 hover:text-black hover:bg-slate-100'
+            }`}
+          >
+            <BookOpenIcon className="w-4 h-4 text-amber-500" />
+            <span className="hidden xs:inline">Guide</span>
+          </button>
+
           {user ? (
             <>
               <button
@@ -70,18 +83,6 @@ export default function Navbar() {
               >
                 <UserIcon className="w-4 h-4 text-amber-500" />
                 <span>Profile</span>
-              </button>
-
-              <button
-                onClick={() => navigate('/admin')}
-                className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold shadow-sm transition flex items-center gap-1.5 focus-visible:ring-2 focus-visible:ring-amber-500 ${
-                  isDark
-                    ? 'bg-slate-800/80 hover:bg-slate-700/80 text-slate-300 hover:text-white border border-white/10'
-                    : 'bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-black border border-slate-200'
-                }`}
-              >
-                <ShieldIcon className="w-4 h-4 text-amber-500" />
-                <span>Admin</span>
               </button>
 
               <div className={`hidden md:flex items-center gap-2 text-xs border-l pl-3 ${

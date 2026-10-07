@@ -8,7 +8,7 @@ export default function RoundInfo({
   mantriUsername,
   botThinking,
   guessDeadline,
-  timeLimit = 15,
+  timeLimit = 25,
   isRoundActive
 }) {
   const [timeLeft, setTimeLeft] = useState(null);

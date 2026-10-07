@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ClockIcon, ScaleIcon, ShieldIcon, AlertIcon } from '../common/Icons';
 
-export default function GuessInterface({ availablePlayers, onGuess, deadline, timeLimit = 15 }) {
+export default function GuessInterface({ availablePlayers, onGuess, deadline, timeLimit = 25 }) {
   const [timeLeft, setTimeLeft] = useState(timeLimit);
 
   useEffect(() => {

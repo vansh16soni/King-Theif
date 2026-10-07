@@ -16,7 +16,7 @@ const initialState = {
   availablePlayers: [],
   isMantriTurn: false,
   guessDeadline: null,
-  guessTimeLimit: 15,
+  guessTimeLimit: 25,
   lastResult: null,
   isTimeout: false,
   nextRoundIn: null,
@@ -100,8 +100,8 @@ function reducer(state, action) {
         mantriUsername: action.mantriUsername,
         availablePlayers: action.availablePlayers,
         isMantriTurn: state.yourRole === 'mantri',
-        guessDeadline: action.deadline || Date.now() + 15000,
-        guessTimeLimit: action.timeLimit || 15
+        guessDeadline: action.deadline || Date.now() + 25000,
+        guessTimeLimit: action.timeLimit || 25
       };
     case 'BOT_THINKING':
       return { ...state, botThinking: action.botName };

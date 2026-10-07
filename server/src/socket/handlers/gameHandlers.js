@@ -5,7 +5,7 @@ const { dealRoles, evaluateGuess } = require('../../services/gameService');
 const { generateBotGuess, generateBotChatMessage } = require('../../services/botService');
 
 const BOT_THINK_DELAY_MS = () => 1200 + Math.random() * 2000; // 1.2-3.2s
-const GUESS_TIME_LIMIT_SEC = 15;
+const GUESS_TIME_LIMIT_SEC = 25;
 const NEXT_ROUND_DELAY_MS = 5000; // 5 seconds review before next round begins
 
 function playerKey(p) {
@@ -14,7 +14,7 @@ function playerKey(p) {
 
 /**
  * Begin a new round: increment counter, deal roles, notify each player of
- * their own role privately, then reveal Raja and hand control to Mantri with 15s timer.
+ * their own role privately, then reveal Raja and hand control to Mantri with 25s timer.
  */
 async function startRound(io, roomCode) {
   const memRoom = getRoom(roomCode);
@@ -66,7 +66,7 @@ async function startRound(io, roomCode) {
     deadline
   });
 
-  // Start 15-second guess timer for Mantri
+  // Start 25-second guess timer for Mantri
   memRoom.guessTimer = setTimeout(() => {
     handleGuessTimeout(io, roomCode, candidates);
   }, GUESS_TIME_LIMIT_SEC * 1000);
@@ -95,7 +95,7 @@ async function startRound(io, roomCode) {
 }
 
 /**
- * Triggered when 15 seconds run out without a Mantri guess.
+ * Triggered when 25 seconds run out without a Mantri guess.
  */
 function handleGuessTimeout(io, roomCode, candidates) {
   const memRoom = getRoom(roomCode);
@@ -104,7 +104,7 @@ function handleGuessTimeout(io, roomCode, candidates) {
   memRoom.guessTimer = null;
 
   io.to(roomCode).emit('game:guess_timeout', {
-    message: 'Time expired! Mantri failed to guess within 15 seconds.'
+    message: 'Time expired! Mantri failed to guess within 25 seconds.'
   });
 
   // Automatic timeout resolution: Mantri fails to identify Chor

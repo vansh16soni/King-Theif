@@ -51,7 +51,7 @@ export default function AdminDashboard() {
       if (err.message?.includes('Admin authentication') || err.message?.includes('denied') || err.message?.includes('expired')) {
         localStorage.removeItem('rmcs_admin_token');
         localStorage.removeItem('rmcs_admin_user');
-        navigate('/admin/login');
+        navigate('/login');
         return;
       }
       setActionMessage({ type: 'error', text: err.message || 'Failed to load admin data' });
@@ -106,7 +106,7 @@ export default function AdminDashboard() {
   function handleAdminLogout() {
     localStorage.removeItem('rmcs_admin_token');
     localStorage.removeItem('rmcs_admin_user');
-    navigate('/admin/login');
+    navigate('/login');
   }
 
   function formatDate(d) {
@@ -147,6 +147,13 @@ export default function AdminDashboard() {
           </div>
 
           <div className="flex items-center gap-3">
+            <button
+              onClick={() => navigate('/lobby')}
+              className="flex items-center gap-1.5 px-3.5 py-2 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 rounded-xl text-xs font-bold text-amber-300 transition shadow-sm focus-visible:ring-2 focus-visible:ring-amber-500"
+            >
+              <TrophyIcon className="w-3.5 h-3.5 text-amber-400" />
+              <span>Game Lobby</span>
+            </button>
             <button
               onClick={fetchData}
               className="flex items-center gap-2 px-3.5 py-2 bg-slate-900 hover:bg-slate-800 border border-white/10 rounded-xl text-xs font-bold text-slate-200 transition shadow-sm focus-visible:ring-2 focus-visible:ring-amber-500"

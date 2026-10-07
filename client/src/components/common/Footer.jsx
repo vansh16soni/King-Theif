@@ -1,10 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ShieldIcon, ScaleIcon, LockIcon, CrownIcon } from './Icons';
+import { useTheme } from '../../contexts/ThemeContext';
+import { ShieldIcon, ScaleIcon, LockIcon, CrownIcon, BookOpenIcon } from './Icons';
 
 export default function Footer() {
+  const { isDark } = useTheme();
+
   return (
-    <footer className="mt-auto border-t border-white/10 bg-[#0b0f19]/80 backdrop-blur-xl text-slate-300 relative z-10">
+    <footer className={`mt-auto border-t backdrop-blur-xl relative z-10 transition-colors duration-200 ${
+      isDark ? 'border-white/10 bg-[#0b0f19]/80 text-slate-300' : 'border-slate-200 bg-white/85 text-slate-600 shadow-sm'
+    }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 text-xs">
           {/* Column 1: Brand & Purpose */}
@@ -17,30 +22,31 @@ export default function Footer() {
                 Raja Mantri Chor Sipahi
               </span>
             </div>
-            <p className="text-slate-400 leading-relaxed">
+            <p className={isDark ? 'text-slate-400 leading-relaxed' : 'text-slate-600 leading-relaxed'}>
               Multiplayer digital recreation of India's classical 4-chit social deduction and strategy parlor game.
             </p>
           </div>
 
           {/* Column 2: Navigation */}
           <div className="space-y-2">
-            <h3 className="font-bold uppercase tracking-wider text-amber-400">
+            <h3 className="font-bold uppercase tracking-wider text-amber-500">
               Quick Navigation
             </h3>
-            <ul className="space-y-1.5 text-slate-300">
+            <ul className={`space-y-1.5 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
               <li>
-                <Link to="/lobby" className="hover:text-amber-300 transition">
+                <Link to="/lobby" className="hover:text-amber-500 transition">
                   Game Lobby
                 </Link>
               </li>
               <li>
-                <Link to="/profile" className="hover:text-amber-300 transition">
-                  Player Profile & Stats
+                <Link to="/guide" className="hover:text-amber-500 transition flex items-center gap-1">
+                  <BookOpenIcon className="w-3.5 h-3.5 text-amber-500" />
+                  How to Play Guide
                 </Link>
               </li>
               <li>
-                <Link to="/admin/login" className="hover:text-amber-300 transition">
-                  Admin Portal
+                <Link to="/profile" className="hover:text-amber-500 transition">
+                  Player Profile & Stats
                 </Link>
               </li>
             </ul>

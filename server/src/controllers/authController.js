@@ -26,6 +26,25 @@ async function register(req, res, next) {
 async function login(req, res, next) {
   try {
     const { username, password } = req.body;
+    const expectedAdminUsername = process.env.ADMIN_USERNAME || 'admin';
+    const expectedAdminPassword = process.env.ADMIN_PASSWORD || 'admin123';
+
+    // Allow administrator to log in from the same unified login option
+    if (username && password && username === expectedAdminUsername && password === expectedAdminPassword) {
+      const secret = process.env.ADMIN_JWT_SECRET || process.env.JWT_SECRET || 'rmcs_admin_fallback_secret';
+      const adminToken = jwt.sign(
+        { isAdmin: true, username: expectedAdminUsername },
+        secret,
+        { expiresIn: '24h' }
+      );
+      return res.json({
+        token: adminToken,
+        isAdmin: true,
+        admin: { username: expectedAdminUsername, role: 'Super Admin' },
+        user: { id: 'admin', username: expectedAdminUsername, isAdmin: true }
+      });
+    }
+
     const user = await User.findOne({ username });
     if (!user) return res.status(401).json({ error: 'Invalid username or password' });
 

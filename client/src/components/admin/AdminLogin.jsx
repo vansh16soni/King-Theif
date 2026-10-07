@@ -98,8 +98,14 @@ export default function AdminLogin({ onAdminLogin }) {
           </button>
         </form>
 
-        <div className="bg-slate-900 border border-white/10 rounded-xl p-3 text-center text-xs text-slate-400 font-medium">
-          Default Account: <span className="font-mono text-amber-300 font-bold">admin</span> &bull; Password: <span className="font-mono text-amber-300 font-bold">admin123</span>
+        <div className="text-center pt-2">
+          <button
+            type="button"
+            onClick={() => navigate('/login')}
+            className="text-xs text-amber-400 font-bold underline hover:text-amber-300"
+          >
+            ← Return to Standard Login
+          </button>
         </div>
       </div>
     </div>

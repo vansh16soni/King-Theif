@@ -24,11 +24,31 @@ export default function Login() {
     setError('');
     setLoading(true);
     try {
-      const { token, user } = await api.login(username, password);
-      login(token, user);
+      const data = await api.login(username, password);
+      if (data?.isAdmin) {
+        localStorage.setItem('rmcs_admin_token', data.token);
+        localStorage.setItem('rmcs_admin_user', JSON.stringify(data.admin));
+        login(data.token, data.user || data.admin);
+        navigate('/admin');
+        return;
+      }
+      login(data.token, data.user);
       navigate('/lobby');
     } catch (err) {
-      setError(err.message);
+      // Fallback check for admin credentials
+      try {
+        const adminData = await api.adminLogin(username, password);
+        if (adminData?.token) {
+          localStorage.setItem('rmcs_admin_token', adminData.token);
+          localStorage.setItem('rmcs_admin_user', JSON.stringify(adminData.admin));
+          login(adminData.token, { id: 'admin', username: adminData.admin.username, isAdmin: true });
+          navigate('/admin');
+          return;
+        }
+      } catch (fallbackErr) {
+        // Fallback failed as well, report primary error
+      }
+      setError(err.message || 'Invalid username or password');
     } finally {
       setLoading(false);
     }

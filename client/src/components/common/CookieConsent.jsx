@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useTheme } from '../../contexts/ThemeContext';
 import { ShieldIcon, CheckIcon } from './Icons';
 
 export default function CookieConsent() {
   const [isVisible, setIsVisible] = useState(false);
+  const { isDark } = useTheme();
 
   useEffect(() => {
     const consent = localStorage.getItem('rmcs_cookie_consent');
@@ -22,7 +24,11 @@ export default function CookieConsent() {
   return (
     <aside
       aria-label="Privacy and Storage Notice"
-      className="fixed bottom-0 left-0 right-0 z-50 p-4 sm:p-5 bg-slate-950/95 backdrop-blur-xl border-t border-white/10 shadow-2xl text-slate-200"
+      className={`fixed bottom-0 left-0 right-0 z-50 p-4 sm:p-5 backdrop-blur-xl border-t shadow-2xl transition-colors duration-200 ${
+        isDark
+          ? 'bg-slate-950/95 border-white/10 text-slate-200'
+          : 'bg-white/95 border-slate-200 text-slate-800'
+      }`}
     >
       <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-start gap-3 max-w-3xl">

@@ -10,12 +10,25 @@ export function ThemeProvider({ children }) {
   useEffect(() => {
     localStorage.setItem('rmcs_theme', theme);
     const root = document.documentElement;
+    const body = document.body;
+    const metaTheme = document.querySelector('meta[name="theme-color"]');
+
     if (theme === 'dark') {
       root.classList.add('dark');
       root.classList.remove('light');
+      if (body) {
+        body.classList.add('dark');
+        body.classList.remove('light');
+      }
+      if (metaTheme) metaTheme.setAttribute('content', '#090d16');
     } else {
       root.classList.add('light');
       root.classList.remove('dark');
+      if (body) {
+        body.classList.add('light');
+        body.classList.remove('dark');
+      }
+      if (metaTheme) metaTheme.setAttribute('content', '#f8fafc');
     }
   }, [theme]);
 
