@@ -11,6 +11,8 @@ const initialState = {
   totalRounds: 10,
   roundNumber: 0,
   yourRole: null,
+  isRoundStarting: false,
+  roundPauseSeconds: 0,
   rajaPlayer: null,
   mantriUsername: null,
   availablePlayers: [],
@@ -79,12 +81,28 @@ function reducer(state, action) {
     }
     case 'GAME_STARTED':
       return { ...state, status: 'playing', players: action.players, totalRounds: action.totalRounds, winner: null, error: null };
+    case 'ROUND_STARTING':
+      return {
+        ...state,
+        isRoundStarting: true,
+        roundNumber: action.roundNumber,
+        totalRounds: action.totalRounds || state.totalRounds,
+        roundPauseSeconds: Math.ceil((action.pauseDurationMs || 3500) / 1000),
+        lastResult: null,
+        isMantriTurn: false,
+        guessDeadline: null
+      };
     case 'ROUND_START':
       return {
         ...state,
         roundNumber: action.roundNumber,
         totalRounds: action.totalRounds || state.totalRounds,
         yourRole: action.yourRole,
+        isRoundStarting: true,
+        roundPauseSeconds: Math.ceil((action.pauseDurationMs || 3500) / 1000),
+        rajaPlayer: null,
+        mantriUsername: null,
+        availablePlayers: [],
         lastResult: null,
         isMantriTurn: false,
         isTimeout: false,
@@ -93,10 +111,11 @@ function reducer(state, action) {
         error: null
       };
     case 'RAJA_REVEALED':
-      return { ...state, rajaPlayer: action.rajaPlayer };
+      return { ...state, rajaPlayer: action.rajaPlayer, isRoundStarting: false };
     case 'MANTRI_TURN':
       return {
         ...state,
+        isRoundStarting: false,
         mantriUsername: action.mantriUsername,
         availablePlayers: action.availablePlayers,
         isMantriTurn: state.yourRole === 'mantri',
@@ -165,6 +184,7 @@ export function GameProvider({ children }) {
       'room:player_joined': (d) => dispatch({ type: 'PLAYER_JOINED', ...d }),
       'room:player_left': (d) => dispatch({ type: 'PLAYER_LEFT', ...d }),
       'game:started': (d) => dispatch({ type: 'GAME_STARTED', ...d }),
+      'game:round_starting': (d) => dispatch({ type: 'ROUND_STARTING', ...d }),
       'game:round_start': (d) => dispatch({ type: 'ROUND_START', ...d }),
       'game:raja_revealed': (d) => dispatch({ type: 'RAJA_REVEALED', ...d }),
       'game:mantri_turn': (d) => dispatch({ type: 'MANTRI_TURN', ...d }),

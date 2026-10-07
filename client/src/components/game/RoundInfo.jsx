@@ -35,13 +35,13 @@ export default function RoundInfo({
       <div className="flex items-center justify-between px-2">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 text-xs font-black uppercase tracking-wider shadow-sm">
           <CrownIcon className="w-3.5 h-3.5 text-amber-400" />
-          <span>Round {roundNumber || 1} of {totalRounds || 10}</span>
+          <span>Round {roundNumber || 1} (R{roundNumber || 1}) of {totalRounds || 10}</span>
         </div>
 
         {timeLeft !== null && timeLeft > 0 && (
           <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900 border border-amber-500/40 text-amber-300 text-xs font-bold shadow-sm">
             <ClockIcon className="w-3.5 h-3.5 text-amber-400" />
-            <span>Timer: <span className={timeLeft <= 5 ? 'text-red-400 font-black' : 'text-amber-300 font-bold'}>{timeLeft}s</span></span>
+            <span>Guess Timer: <span className={timeLeft <= 5 ? 'text-red-400 font-black' : 'text-amber-300 font-bold'}>{timeLeft}s</span></span>
           </div>
         )}
       </div>
@@ -52,8 +52,8 @@ export default function RoundInfo({
             Player <span className="underline decoration-amber-400">{rajaPlayer.username}</span> is the Raja
           </div>
         ) : (
-          <div className="text-lg font-bold text-amber-300">
-            Dealing cards to all four players...
+          <div className="text-lg font-bold text-amber-400 animate-pulse">
+            Dealing Chits &bull; Round {roundNumber || 1} (R{roundNumber || 1}) Commencing...
           </div>
         )}
 

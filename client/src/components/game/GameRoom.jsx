@@ -13,6 +13,7 @@ import GuessInterface from './GuessInterface';
 import ResultDisplay from './ResultDisplay';
 import Scoreboard from './Scoreboard';
 import GameOver from './GameOver';
+import RoundStartView from './RoundStartView';
 import { KeyIcon, AlertIcon, CheckIcon, ClockIcon, TrophyIcon } from '../common/Icons';
 
 export default function GameRoom() {
@@ -162,6 +163,15 @@ export default function GameRoom() {
       {state.status === 'playing' && (
         <div className="grid lg:grid-cols-3 gap-6 items-start">
           <div className="lg:col-span-2 space-y-5">
+            {state.isRoundStarting && (
+              <RoundStartView
+                roundNumber={state.roundNumber}
+                totalRounds={state.totalRounds}
+                yourRole={state.yourRole}
+                durationSeconds={state.roundPauseSeconds || 3.5}
+              />
+            )}
+
             <RoundInfo
               roundNumber={state.roundNumber}
               totalRounds={state.totalRounds}
@@ -170,7 +180,7 @@ export default function GameRoom() {
               botThinking={state.botThinking}
               guessDeadline={state.guessDeadline}
               timeLimit={state.guessTimeLimit}
-              isRoundActive={!state.lastResult}
+              isRoundActive={!state.lastResult && !state.isRoundStarting}
             />
 
             <CardDeck yourRole={state.yourRole} roundActive={!!state.roundNumber} />

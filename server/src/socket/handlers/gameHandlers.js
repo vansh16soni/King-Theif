@@ -7,6 +7,7 @@ const { generateBotGuess, generateBotChatMessage } = require('../../services/bot
 const BOT_THINK_DELAY_MS = () => 1200 + Math.random() * 2000; // 1.2-3.2s
 const GUESS_TIME_LIMIT_SEC = 25;
 const NEXT_ROUND_DELAY_MS = 5000; // 5 seconds review before next round begins
+const ROUND_START_PAUSE_MS = 3500; // 3.5 seconds pause/view when a new round (e.g. R2) starts
 
 function playerKey(p) {
   return p.userId || p.socketId || p.username;
@@ -14,7 +15,8 @@ function playerKey(p) {
 
 /**
  * Begin a new round: increment counter, deal roles, notify each player of
- * their own role privately, then reveal Raja and hand control to Mantri with 25s timer.
+ * their own role privately, provide a 3.5s pause/view to view round start (R2),
+ * then reveal Raja and hand control to Mantri with full 25s timer.
  */
 async function startRound(io, roomCode) {
   const memRoom = getRoom(roomCode);
@@ -29,6 +31,10 @@ async function startRound(io, roomCode) {
     clearTimeout(memRoom.nextRoundTimer);
     memRoom.nextRoundTimer = null;
   }
+  if (memRoom.roundIntroTimer) {
+    clearTimeout(memRoom.roundIntroTimer);
+    memRoom.roundIntroTimer = null;
+  }
 
   memRoom.currentRound += 1;
 
@@ -39,59 +45,72 @@ async function startRound(io, roomCode) {
   const chits = dealRoles(memRoom.players);
   memRoom.currentChits = chits;
 
-  // Privately tell each player their role + chit
+  // Privately tell each player their role + chit with pause info
   Object.entries(chits).forEach(([role, info]) => {
     if (info.socketId) {
       io.to(info.socketId).emit('game:round_start', {
         roundNumber: memRoom.currentRound,
         totalRounds: memRoom.totalRounds,
         yourRole: role,
-        yourChit: role
+        yourChit: role,
+        pauseDurationMs: ROUND_START_PAUSE_MS
       });
     }
   });
 
-  io.to(roomCode).emit('game:raja_revealed', { rajaPlayer: { username: chits.raja.username } });
-
-  const candidates = memRoom.players
-    .filter(p => playerKey(p) !== chits.raja.playerId && playerKey(p) !== chits.mantri.playerId)
-    .map(p => ({ playerId: playerKey(p), username: p.username }));
-
-  const deadline = Date.now() + (GUESS_TIME_LIMIT_SEC * 1000);
-
-  io.to(roomCode).emit('game:mantri_turn', {
-    mantriUsername: chits.mantri.username,
-    availablePlayers: candidates,
-    timeLimit: GUESS_TIME_LIMIT_SEC,
-    deadline
+  // Broadcast round start announcement view to all room participants
+  io.to(roomCode).emit('game:round_starting', {
+    roundNumber: memRoom.currentRound,
+    totalRounds: memRoom.totalRounds,
+    pauseDurationMs: ROUND_START_PAUSE_MS
   });
 
-  // Start 25-second guess timer for Mantri
-  memRoom.guessTimer = setTimeout(() => {
-    handleGuessTimeout(io, roomCode, candidates);
-  }, GUESS_TIME_LIMIT_SEC * 1000);
+  // Pause for 3.5 seconds to display the "Round X (Rx) Started" view before deduction countdown begins
+  memRoom.roundIntroTimer = setTimeout(() => {
+    if (!memRoom.currentChits) return;
 
-  // If Mantri is a bot, auto-generate a guess after a "thinking" delay
-  if (chits.mantri.isBot) {
-    const mantriPlayer = memRoom.players.find(p => playerKey(p) === chits.mantri.playerId);
-    io.to(roomCode).emit('bot:thinking', { botName: chits.mantri.username });
-    setTimeout(async () => {
-      // Ensure the room is still in active guess phase
-      if (!memRoom.currentChits || !memRoom.guessTimer) return;
-      const guess = await generateBotGuess({
-        username: mantriPlayer.username,
-        personality: mantriPlayer.personality,
-        candidates,
-        chatLog: memRoom.chatLog
-      });
-      clearTimeout(memRoom.guessTimer);
-      memRoom.guessTimer = null;
-      resolveGuess(io, roomCode, guess);
-    }, BOT_THINK_DELAY_MS());
-  }
+    io.to(roomCode).emit('game:raja_revealed', { rajaPlayer: { username: chits.raja.username } });
 
-  // Trigger a bit of ambient bot chat this round (non-blocking)
-  triggerBotChatter(io, roomCode, chits);
+    const candidates = memRoom.players
+      .filter(p => playerKey(p) !== chits.raja.playerId && playerKey(p) !== chits.mantri.playerId)
+      .map(p => ({ playerId: playerKey(p), username: p.username }));
+
+    const deadline = Date.now() + (GUESS_TIME_LIMIT_SEC * 1000);
+
+    io.to(roomCode).emit('game:mantri_turn', {
+      mantriUsername: chits.mantri.username,
+      availablePlayers: candidates,
+      timeLimit: GUESS_TIME_LIMIT_SEC,
+      deadline
+    });
+
+    // Start 25-second guess timer for Mantri AFTER the round start view/pause
+    memRoom.guessTimer = setTimeout(() => {
+      handleGuessTimeout(io, roomCode, candidates);
+    }, GUESS_TIME_LIMIT_SEC * 1000);
+
+    // If Mantri is a bot, auto-generate a guess after a "thinking" delay
+    if (chits.mantri.isBot) {
+      const mantriPlayer = memRoom.players.find(p => playerKey(p) === chits.mantri.playerId);
+      io.to(roomCode).emit('bot:thinking', { botName: chits.mantri.username });
+      setTimeout(async () => {
+        // Ensure the room is still in active guess phase
+        if (!memRoom.currentChits || !memRoom.guessTimer) return;
+        const guess = await generateBotGuess({
+          username: mantriPlayer.username,
+          personality: mantriPlayer.personality,
+          candidates,
+          chatLog: memRoom.chatLog
+        });
+        clearTimeout(memRoom.guessTimer);
+        memRoom.guessTimer = null;
+        resolveGuess(io, roomCode, guess);
+      }, BOT_THINK_DELAY_MS());
+    }
+
+    // Trigger ambient bot chatter for the round
+    triggerBotChatter(io, roomCode, chits);
+  }, ROUND_START_PAUSE_MS);
 }
 
 /**
@@ -221,6 +240,7 @@ async function endGame(io, roomCode) {
 
   if (memRoom.guessTimer) clearTimeout(memRoom.guessTimer);
   if (memRoom.nextRoundTimer) clearTimeout(memRoom.nextRoundTimer);
+  if (memRoom.roundIntroTimer) clearTimeout(memRoom.roundIntroTimer);
 
   const finalScores = memRoom.scores;
   const winnerKey = Object.entries(finalScores).sort((a, b) => b[1] - a[1])[0]?.[0];
