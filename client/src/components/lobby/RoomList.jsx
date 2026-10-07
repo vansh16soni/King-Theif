@@ -1,20 +1,32 @@
 import React from 'react';
 import CreateRoom from './CreateRoom';
 import JoinRoom from './JoinRoom';
+import Breadcrumbs from '../common/Breadcrumbs';
+import { usePageMeta } from '../../hooks/usePageMeta';
+import { CrownIcon, ScaleIcon, ShieldIcon, KeyIcon, TrophyIcon } from '../common/Icons';
 
 export default function RoomList() {
+  usePageMeta({
+    title: 'Game Lobby',
+    description: 'Host or join a four-player Raja Mantri Chor Sipahi room. Play with friends or intelligent AI bots in real-time.',
+    path: '/lobby'
+  });
+
   return (
-    <div className="max-w-4xl mx-auto space-y-8 mt-4 pb-12">
-      {/* Royal Castle Banner Intro */}
-      <div className="text-center space-y-2 relative">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#fef3c7] border border-amber-400/80 text-[#92400e] text-xs font-cinzel font-black tracking-widest uppercase shadow-sm">
-          🏰 Four Nobles &bull; One Castle Throne
+    <div className="max-w-4xl mx-auto space-y-8 mt-2 pb-12">
+      <Breadcrumbs items={[{ label: 'Game Lobby' }]} />
+
+      {/* Lobby Banner Intro */}
+      <div className="text-center space-y-2.5 relative">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 text-xs font-bold tracking-wider uppercase shadow-sm">
+          <TrophyIcon className="w-4 h-4 text-amber-400" />
+          <span>4-Player Social Deduction Game</span>
         </div>
-        <h1 className="text-3xl sm:text-4xl font-cinzel font-black gold-gradient-text tracking-wide uppercase">
-          The Grand Imperial Castle
+        <h1 className="text-3xl sm:text-4xl font-black gold-gradient-text tracking-wide uppercase">
+          Game Lobby
         </h1>
-        <p className="text-xs sm:text-sm text-[#6b513c] max-w-lg mx-auto font-medium">
-          Raja presides from the high seat, Mantri unmasks deception with strategic wit, Sipahi guards the keep, and Chor sneaks into the fortress treasury.
+        <p className="text-xs sm:text-sm text-slate-300 max-w-xl mx-auto font-medium leading-relaxed">
+          Create a private match room or join with a 4-digit code. Raja scores guaranteed points, Mantri deduces the Chor, Sipahi stays ready, and the Chor tries to bluff undetected!
         </p>
       </div>
 
@@ -24,22 +36,49 @@ export default function RoomList() {
         <JoinRoom />
       </div>
 
-      {/* Royal Role Rules Summary */}
+      {/* Role Summary */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4">
-        <RoleCard role="Raja 👑" points="1,000 Pts" desc="The Castle Monarch" color="border-amber-400/80 bg-[#fef9ee] text-[#92400e]" badgeBg="bg-amber-100 text-amber-900" />
-        <RoleCard role="Mantri 🧠" points="500 Pts" desc="The Royal Strategist" color="border-purple-300 bg-[#faf5ff] text-purple-900" badgeBg="bg-purple-100 text-purple-900" />
-        <RoleCard role="Sipahi 🛡️" points="300 Pts" desc="The Realm Protector" color="border-sky-300 bg-[#f0f9ff] text-sky-900" badgeBg="bg-sky-100 text-sky-900" />
-        <RoleCard role="Chor 🕵️" points="0 / 500 Pts" desc="The Shadow Infiltrator" color="border-rose-300 bg-[#fff1f2] text-rose-900" badgeBg="bg-rose-100 text-rose-900" />
+        <RoleCard
+          role="Raja"
+          points="1,000 Pts"
+          desc="Monarch (Safe)"
+          color="border-amber-500/40 bg-amber-950/30 text-amber-300"
+          icon={<CrownIcon className="w-5 h-5 text-amber-400" />}
+        />
+        <RoleCard
+          role="Mantri"
+          points="500 Pts"
+          desc="Detective (Guesser)"
+          color="border-purple-500/40 bg-purple-950/30 text-purple-300"
+          icon={<ScaleIcon className="w-5 h-5 text-purple-400" />}
+        />
+        <RoleCard
+          role="Sipahi"
+          points="300 Pts"
+          desc="Soldier (Guard)"
+          color="border-sky-500/40 bg-sky-950/30 text-sky-300"
+          icon={<ShieldIcon className="w-5 h-5 text-sky-400" />}
+        />
+        <RoleCard
+          role="Chor"
+          points="0 / 500 Pts"
+          desc="Thief (Bluffer)"
+          color="border-rose-500/40 bg-rose-950/30 text-rose-300"
+          icon={<KeyIcon className="w-5 h-5 text-rose-400" />}
+        />
       </div>
     </div>
   );
 }
 
-function RoleCard({ role, points, desc, color, badgeBg }) {
+function RoleCard({ role, points, desc, color, icon }) {
   return (
-    <div className={`p-4 rounded-2xl border-2 ${color} text-center space-y-1.5 shadow-md shadow-[#4a3018]/5 transition hover:scale-[1.02]`}>
-      <div className="font-cinzel font-black text-sm tracking-wide">{role}</div>
-      <div className="text-xl font-black">{points}</div>
+    <div className={`p-4 rounded-xl border ${color} text-center space-y-2 backdrop-blur-md shadow-lg transition hover:translate-y-[-2px]`}>
+      <div className="flex justify-center items-center gap-1.5 font-black text-sm tracking-wide">
+        {icon}
+        <span>{role}</span>
+      </div>
+      <div className="text-xl font-black text-white">{points}</div>
       <div className="text-[11px] opacity-80 font-semibold">{desc}</div>
     </div>
   );

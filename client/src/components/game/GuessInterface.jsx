@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { ClockIcon, ScaleIcon, ShieldIcon, AlertIcon } from '../common/Icons';
 
 export default function GuessInterface({ availablePlayers, onGuess, deadline, timeLimit = 15 }) {
   const [timeLeft, setTimeLeft] = useState(timeLimit);
@@ -33,31 +34,32 @@ export default function GuessInterface({ availablePlayers, onGuess, deadline, ti
   const isUrgent = timeLeft <= 5;
 
   return (
-    <div className="royal-glass p-6 sm:p-7 rounded-3xl border-2 border-purple-400/80 shadow-mantri-glow space-y-4 relative overflow-hidden animate-[fadeIn_0.3s_ease-out]">
-      <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-purple-600 via-fuchsia-400 to-amber-500" />
+    <div className="royal-glass p-6 sm:p-7 rounded-2xl border border-amber-500/50 space-y-4 relative overflow-hidden shadow-2xl">
+      <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600" />
       
-      {/* 15-Second Animated Decree Timer Bar */}
+      {/* Timer Bar */}
       <div className="space-y-1.5">
-        <div className="flex items-center justify-between text-xs font-cinzel font-bold">
-          <span className="text-purple-900 flex items-center gap-1.5 font-black">
-            <span>⏱️</span> Royal Sandglass Timer
+        <div className="flex items-center justify-between text-xs font-bold">
+          <span className="text-amber-400 flex items-center gap-1.5 font-bold">
+            <ClockIcon className="w-4 h-4 text-amber-400" />
+            <span>Guess Countdown</span>
           </span>
           <span
-            className={`font-black text-sm px-3 py-0.5 rounded-full border transition ${
+            className={`font-black text-sm px-3 py-0.5 rounded-lg border transition ${
               isUrgent
-                ? 'text-red-900 bg-red-100 border-red-400 animate-bounce'
-                : 'text-amber-950 bg-amber-100 border-amber-400'
+                ? 'text-red-300 bg-red-950/80 border-red-500/60'
+                : 'text-amber-300 bg-amber-950/60 border-amber-500/40'
             }`}
           >
             {timeLeft}s Remaining
           </span>
         </div>
-        <div className="w-full h-3 bg-[#ebdcc2] rounded-full overflow-hidden p-[1.5px] border border-purple-300">
+        <div className="w-full h-2.5 bg-slate-900 rounded-lg overflow-hidden border border-white/10">
           <div
-            className={`h-full rounded-full transition-all duration-300 ${
+            className={`h-full rounded-lg transition-all duration-300 ${
               isUrgent
-                ? 'bg-gradient-to-r from-red-600 to-amber-500 animate-pulse'
-                : 'bg-gradient-to-r from-purple-700 via-fuchsia-500 to-amber-500'
+                ? 'bg-gradient-to-r from-red-600 to-amber-500'
+                : 'bg-gradient-to-r from-amber-500 to-yellow-400'
             }`}
             style={{ width: `${progressPercent}%` }}
           />
@@ -65,14 +67,15 @@ export default function GuessInterface({ availablePlayers, onGuess, deadline, ti
       </div>
 
       <div className="text-center space-y-1 pt-1">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-100 border border-purple-300 text-purple-900 text-xs font-cinzel font-black uppercase tracking-widest shadow-sm">
-          🧠 Mantri's Castle Proclamation
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-500/20 border border-purple-500/40 text-purple-300 text-xs font-bold uppercase tracking-wider shadow-sm">
+          <ScaleIcon className="w-3.5 h-3.5 text-purple-400" />
+          <span>Mantri's Turn</span>
         </div>
-        <h3 className="text-xl font-cinzel font-black text-[#2c1a0e]">
-          Which noble stands as the loyal <span className="text-sky-700">Sipahi</span>?
+        <h3 className="text-xl font-black text-white">
+          Which player is the <span className="text-sky-400">Sipahi</span>?
         </h3>
-        <p className="text-xs text-[#6b513c] font-medium">
-          Identify the realm guardian; the other courtier shall be convicted as the <span className="text-rose-700 font-bold">Chor</span>.
+        <p className="text-xs text-slate-300 font-medium">
+          Select the player you believe is the Sipahi. The remaining player will be identified as the <span className="text-rose-400 font-bold">Chor</span>.
         </p>
       </div>
 
@@ -82,24 +85,26 @@ export default function GuessInterface({ availablePlayers, onGuess, deadline, ti
             key={p.playerId}
             onClick={() => submit(p.playerId)}
             disabled={timeLeft <= 0}
-            className="group p-5 rounded-2xl bg-gradient-to-b from-[#fffdf8] to-[#f5ebd7] border-2 border-purple-300/80 hover:border-amber-500 hover:shadow-lg transition duration-200 flex flex-col items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
+            className="group p-5 rounded-2xl bg-slate-900/80 border border-white/15 hover:border-amber-400 hover:shadow-lg transition duration-200 flex flex-col items-center justify-center gap-2.5 disabled:opacity-40 disabled:cursor-not-allowed focus-visible:ring-2 focus-visible:ring-amber-500"
           >
-            <div className="w-14 h-14 rounded-2xl bg-purple-100 group-hover:bg-amber-100 border-2 border-purple-300 group-hover:border-amber-400 flex items-center justify-center text-3xl transition shadow-inner">
-              🛡️
+            <div className="w-12 h-12 rounded-xl bg-sky-500/20 group-hover:bg-sky-500/30 border border-sky-500/40 flex items-center justify-center text-sky-400 transition shadow-inner">
+              <ShieldIcon className="w-6 h-6 text-sky-400" />
             </div>
-            <span className="font-cinzel font-black text-lg text-[#2c1a0e] group-hover:text-[#92400e] transition">
+            <span className="font-black text-lg text-white group-hover:text-amber-300 transition">
               {p.username}
             </span>
-            <span className="text-xs px-3.5 py-1 rounded-full bg-sky-100 text-sky-900 font-bold border border-sky-400/60 shadow-sm">
-              Declare Sipahi 🛡️
+            <span className="text-xs px-3 py-1 rounded-lg bg-sky-950/80 text-sky-300 font-bold border border-sky-500/40 shadow-sm flex items-center gap-1">
+              <ShieldIcon className="w-3.5 h-3.5" />
+              Select as Sipahi
             </span>
           </button>
         ))}
       </div>
 
       {timeLeft <= 0 && (
-        <div className="text-center text-xs text-red-900 font-bold bg-red-100 p-3 rounded-xl border border-red-300 animate-pulse">
-          ⌛ The sandglass has emptied! Chor escapes over the fortress wall...
+        <div className="text-center text-xs text-red-200 font-bold bg-red-950/80 p-3 rounded-xl border border-red-500/60 flex items-center justify-center gap-2">
+          <AlertIcon className="w-4 h-4 text-red-400" />
+          <span>Time expired: Mantri failed to guess before the countdown ended.</span>
         </div>
       )}
     </div>

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../../utils/api';
+import { usePageMeta } from '../../hooks/usePageMeta';
 import LoadingSpinner from '../common/LoadingSpinner';
+import { ShieldIcon, CrownIcon, ScaleIcon, KeyIcon, AlertIcon, CheckIcon, SearchIcon, ClockIcon, TrophyIcon, LockIcon } from '../common/Icons';
 
 export default function AdminDashboard() {
   const [players, setPlayers] = useState([]);
@@ -20,6 +22,12 @@ export default function AdminDashboard() {
   const [isDeleting, setIsDeleting] = useState(false);
   
   const navigate = useNavigate();
+
+  usePageMeta({
+    title: 'Admin Dashboard',
+    description: 'Administrative management console for Raja Mantri Chor Sipahi players and records.',
+    path: '/admin'
+  });
 
   useEffect(() => {
     fetchData();
@@ -73,7 +81,6 @@ export default function AdminDashboard() {
     try {
       const res = await api.deletePlayer(target._id);
       
-      // Optimistically remove from state immediately
       setPlayers(prev => prev.filter(p => p._id !== target._id));
       setOverview(prev => prev ? { ...prev, totalUsers: Math.max(0, prev.totalUsers - 1) } : prev);
       
@@ -88,7 +95,7 @@ export default function AdminDashboard() {
       }
       
       setPlayerToDelete(null);
-      fetchData(); // Sync full data in background
+      fetchData();
     } catch (err) {
       setActionMessage({ type: 'error', text: err.message || 'Failed to delete player.' });
     } finally {
@@ -114,29 +121,26 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen -m-4 sm:-m-6 p-4 sm:p-8 bg-[#09040e] bg-[radial-gradient(ellipse_at_50%_0%,rgba(217,119,6,0.14)_0%,transparent_60%),radial-gradient(ellipse_at_80%_80%,rgba(126,34,206,0.12)_0%,transparent_50%)] text-slate-100">
+    <div className="min-h-screen -m-4 sm:-m-6 p-4 sm:p-8 bg-[#110b07] text-slate-100">
       <div className="max-w-7xl mx-auto space-y-6 pb-12">
-        {/* Top Knight Royal Header */}
-        <div className="bg-[#130b21]/95 backdrop-blur-xl border-2 border-amber-500/30 p-6 rounded-3xl shadow-[0_16px_45px_rgba(0,0,0,0.7)] relative overflow-hidden flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-purple-600 via-amber-400 to-purple-600" />
-          <div className="absolute -top-12 -right-12 w-36 h-36 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+        {/* Top Header */}
+        <div className="bg-[#1a120c]/95 backdrop-blur-xl border-2 border-amber-500/30 p-6 rounded-2xl shadow-xl relative overflow-hidden flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-amber-600 via-yellow-400 to-amber-600" />
 
           <div>
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-purple-600 via-amber-400 to-yellow-200 p-[2px] shadow-gold-glow">
-                <div className="w-full h-full bg-[#0d071a] rounded-[14px] flex items-center justify-center text-2xl shadow-inner">
-                  🛡️
-                </div>
+              <div className="w-12 h-12 rounded-xl bg-amber-950 border-2 border-amber-400/80 p-[2px] flex items-center justify-center">
+                <ShieldIcon className="w-6 h-6 text-amber-400" />
               </div>
               <div>
-                <h1 className="text-2xl font-cinzel font-black tracking-wide text-white flex items-center gap-2">
-                  Imperial <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-400">Command Center</span>
-                  <span className="text-[10px] bg-purple-950/90 text-purple-200 border border-purple-500/50 px-2.5 py-0.5 rounded-full font-cinzel font-bold shadow-sm">
-                    🔒 Sealed Authority
+                <h1 className="text-2xl font-black tracking-wide text-white flex items-center gap-2">
+                  Admin <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-400">Dashboard</span>
+                  <span className="text-[10px] bg-amber-950 text-amber-200 border border-amber-500/50 px-2.5 py-0.5 rounded-md font-bold shadow-sm">
+                    Authorized
                   </span>
                 </h1>
-                <p className="text-amber-200/60 text-xs mt-0.5 font-medium">
-                  High castle intelligence, real-time presence indicators, and kingdom citizen records.
+                <p className="text-slate-400 text-xs mt-0.5 font-medium">
+                  Verified player accounts, real-time presence indicators, and user management.
                 </p>
               </div>
             </div>
@@ -145,15 +149,16 @@ export default function AdminDashboard() {
           <div className="flex items-center gap-3">
             <button
               onClick={fetchData}
-              className="flex items-center gap-2 px-3.5 py-2 bg-[#201138] hover:bg-[#2d184e] border border-amber-500/40 rounded-xl text-xs font-cinzel font-bold text-amber-200 transition shadow-sm"
+              className="flex items-center gap-2 px-3.5 py-2 bg-slate-900 hover:bg-slate-800 border border-white/10 rounded-xl text-xs font-bold text-slate-200 transition shadow-sm focus-visible:ring-2 focus-visible:ring-amber-500"
             >
-              <span>🔄</span> Refresh Archives
+              <span>Refresh Records</span>
             </button>
             <button
               onClick={handleAdminLogout}
-              className="flex items-center gap-2 px-3.5 py-2 bg-red-950/80 hover:bg-red-900 border border-red-500/50 rounded-xl text-xs font-cinzel font-bold text-red-200 transition shadow-sm"
+              className="flex items-center gap-2 px-3.5 py-2 bg-red-950/80 hover:bg-red-900 border border-red-500/50 rounded-xl text-xs font-bold text-red-200 transition shadow-sm focus-visible:ring-2 focus-visible:ring-red-500"
             >
-              <span>🔒</span> Close Portal
+              <LockIcon className="w-3.5 h-3.5" />
+              <span>Logout</span>
             </button>
           </div>
         </div>
@@ -161,14 +166,15 @@ export default function AdminDashboard() {
         {/* Notifications Banner */}
         {actionMessage.text && (
           <div
-            className={`p-4 rounded-2xl text-sm flex items-center justify-between shadow-md border-2 ${
+            className={`p-4 rounded-xl text-sm flex items-center justify-between shadow-md border ${
               actionMessage.type === 'error'
                 ? 'bg-red-950/90 border-red-500/80 text-red-200'
                 : 'bg-emerald-950/90 border-emerald-500/80 text-emerald-200'
             }`}
           >
             <span className="flex items-center gap-2 font-semibold">
-              {actionMessage.type === 'error' ? '❌' : '✅'} {actionMessage.text}
+              {actionMessage.type === 'error' ? <AlertIcon className="w-4 h-4 text-red-400" /> : <CheckIcon className="w-4 h-4 text-emerald-400" />}
+              <span>{actionMessage.text}</span>
             </span>
             <button
               onClick={() => setActionMessage({ type: '', text: '' })}
@@ -182,61 +188,63 @@ export default function AdminDashboard() {
         {/* Overview Statistics Cards */}
         {overview && (
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-[#130b21]/90 backdrop-blur-xl border-2 border-amber-500/25 rounded-2xl p-5 shadow-[0_10px_30px_rgba(0,0,0,0.6)]">
+            <div className="bg-[#1a120c]/90 backdrop-blur-xl border border-amber-500/25 rounded-xl p-5 shadow-sm">
               <div className="flex items-center justify-between text-amber-300 text-xs font-cinzel font-black uppercase tracking-wider">
-                <span>Registered Nobles</span>
-                <span className="text-xl">👥</span>
+                <span>Registered Players</span>
+                <CrownIcon className="w-5 h-5 text-amber-400" />
               </div>
               <div className="text-3xl font-cinzel font-black text-white mt-2">{overview.totalUsers ?? 0}</div>
-              <div className="text-xs text-amber-200/50 mt-1 font-medium">Active kingdom citizen records</div>
+              <div className="text-xs text-amber-200/50 mt-1 font-medium">Registered account records</div>
             </div>
 
-            <div className="bg-[#130b21]/90 backdrop-blur-xl border-2 border-amber-500/25 rounded-2xl p-5 shadow-[0_10px_30px_rgba(0,0,0,0.6)]">
+            <div className="bg-[#1a120c]/90 backdrop-blur-xl border border-amber-500/25 rounded-xl p-5 shadow-sm">
               <div className="flex items-center justify-between text-amber-300 text-xs font-cinzel font-black uppercase tracking-wider">
-                <span>Imperial Treasury</span>
-                <span className="text-xl">👑</span>
+                <span>Total Accumulated Score</span>
+                <TrophyIcon className="w-5 h-5 text-amber-400" />
               </div>
               <div className="text-3xl font-cinzel font-black text-amber-400 mt-2">
                 {(overview.totalPoints ?? 0).toLocaleString()}
               </div>
-              <div className="text-xs text-amber-200/50 mt-1 font-medium">Total royal points distributed</div>
+              <div className="text-xs text-amber-200/50 mt-1 font-medium">Points earned across all rounds</div>
             </div>
 
-            <div className="bg-[#130b21]/90 backdrop-blur-xl border-2 border-amber-500/25 rounded-2xl p-5 shadow-[0_10px_30px_rgba(0,0,0,0.6)]">
-              <div className="flex items-center justify-between text-purple-300 text-xs font-cinzel font-black uppercase tracking-wider">
-                <span>Darbar Matches</span>
-                <span className="text-xl">🎮</span>
+            <div className="bg-[#1a120c]/90 backdrop-blur-xl border border-amber-500/25 rounded-xl p-5 shadow-sm">
+              <div className="flex items-center justify-between text-amber-300 text-xs font-cinzel font-black uppercase tracking-wider">
+                <span>Matches Hosted</span>
+                <ClockIcon className="w-5 h-5 text-amber-400" />
               </div>
-              <div className="text-3xl font-cinzel font-black text-purple-300 mt-2">
+              <div className="text-3xl font-cinzel font-black text-amber-300 mt-2">
                 {(overview.totalGames ?? 0).toLocaleString()}
               </div>
-              <div className="text-xs text-amber-200/50 mt-1 font-medium">Completed grand matches</div>
+              <div className="text-xs text-amber-200/50 mt-1 font-medium">Total match sessions</div>
             </div>
 
-            <div className="bg-[#130b21]/90 backdrop-blur-xl border-2 border-amber-500/25 rounded-2xl p-5 shadow-[0_10px_30px_rgba(0,0,0,0.6)]">
-              <div className="flex items-center justify-between text-sky-300 text-xs font-cinzel font-black uppercase tracking-wider">
-                <span>Chits Dealt</span>
-                <span className="text-xl">🃏</span>
+            <div className="bg-[#1a120c]/90 backdrop-blur-xl border border-amber-500/25 rounded-xl p-5 shadow-sm">
+              <div className="flex items-center justify-between text-amber-300 text-xs font-cinzel font-black uppercase tracking-wider">
+                <span>Rounds Completed</span>
+                <ScaleIcon className="w-5 h-5 text-amber-400" />
               </div>
-              <div className="text-3xl font-cinzel font-black text-sky-300 mt-2">
+              <div className="text-3xl font-cinzel font-black text-amber-200 mt-2">
                 {(overview.totalRounds ?? 0).toLocaleString()}
               </div>
-              <div className="text-xs text-amber-200/50 mt-1 font-medium">Total chit rounds played</div>
+              <div className="text-xs text-amber-200/50 mt-1 font-medium">Total individual rounds</div>
             </div>
           </div>
         )}
 
         {/* Filter & Search Bar */}
-        <div className="bg-[#130b21]/90 backdrop-blur-xl border-2 border-amber-500/25 p-4 rounded-2xl flex flex-col sm:flex-row gap-4 justify-between items-center shadow-[0_10px_30px_rgba(0,0,0,0.6)]">
+        <div className="bg-[#1a120c]/90 backdrop-blur-xl border border-amber-500/25 p-4 rounded-xl flex flex-col sm:flex-row gap-4 justify-between items-center shadow-sm">
           <div className="relative w-full sm:w-80">
             <input
               type="text"
-              placeholder="Search noble by moniker or ID..."
+              placeholder="Search by username or ID..."
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              className="w-full bg-[#0a0514] border-2 border-amber-500/30 rounded-xl px-4 py-2.5 pl-10 text-sm focus:outline-none focus:border-amber-400 text-white placeholder-slate-500 font-medium shadow-inner transition"
+              className="w-full bg-[#0f0a07] border border-amber-500/30 rounded-lg px-4 py-2.5 pl-10 text-sm focus:outline-none focus:border-amber-400 text-white placeholder-amber-800 font-medium shadow-inner transition focus-visible:ring-2 focus-visible:ring-amber-500"
             />
-            <span className="absolute left-3.5 top-3 text-slate-400 text-sm">🔍</span>
+            <span className="absolute left-3.5 top-3 text-amber-400">
+              <SearchIcon className="w-4 h-4" />
+            </span>
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery('')}
@@ -248,62 +256,61 @@ export default function AdminDashboard() {
           </div>
 
           <div className="flex items-center gap-3 w-full sm:w-auto">
-            <label className="text-xs text-amber-300 font-cinzel font-black whitespace-nowrap">Sort By:</label>
+            <label className="text-xs text-amber-300 font-cinzel font-bold whitespace-nowrap">Sort By:</label>
             <select
               value={sortBy}
               onChange={e => setSortBy(e.target.value)}
-              className="bg-[#0a0514] border-2 border-amber-500/30 rounded-xl px-3 py-2 text-sm text-amber-200 font-semibold focus:outline-none focus:border-amber-400"
+              className="bg-[#0f0a07] border border-amber-500/30 rounded-lg px-3 py-2 text-sm text-amber-200 font-semibold focus:outline-none focus:border-amber-400"
             >
               <option value="totalPoints">Total Points</option>
-              <option value="gamesWon">Victories Won</option>
+              <option value="gamesWon">Matches Won</option>
               <option value="gamesPlayed">Matches Played</option>
-              <option value="totalRoundsPlayed">Rounds Endured</option>
-              <option value="createdAt">Coronation Date</option>
-              <option value="lastActive">Last Presence</option>
+              <option value="totalRoundsPlayed">Rounds Completed</option>
+              <option value="createdAt">Registration Date</option>
+              <option value="lastActive">Last Active</option>
             </select>
 
             <button
               onClick={() => setSortOrder(prev => (prev === 'asc' ? 'desc' : 'asc'))}
-              className="p-2 bg-[#201138] hover:bg-[#2d184e] border border-amber-500/40 rounded-xl text-sm font-cinzel font-bold text-amber-200 transition"
+              className="p-2 bg-[#251910] hover:bg-[#332216] border border-amber-500/40 rounded-lg text-sm font-cinzel font-bold text-amber-200 transition"
               title={`Sort ${sortOrder === 'asc' ? 'Descending' : 'Ascending'}`}
             >
-              {sortOrder === 'asc' ? '🔼 Asc' : '🔽 Desc'}
+              {sortOrder === 'asc' ? 'Ascending' : 'Descending'}
             </button>
           </div>
         </div>
 
         {/* Players Management Table */}
-        <div className="bg-[#130b21]/95 backdrop-blur-xl border-2 border-amber-500/30 rounded-3xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.8)]">
+        <div className="bg-[#1a120c]/95 backdrop-blur-xl border border-amber-500/30 rounded-2xl overflow-hidden shadow-xl">
           {loading ? (
             <div className="py-16">
-              <LoadingSpinner label="Consulting kingdom scrolls..." />
+              <LoadingSpinner label="Fetching registered records..." />
             </div>
           ) : players.length === 0 ? (
             <div className="py-16 text-center text-slate-400 space-y-2">
-              <div className="text-4xl">🕵️‍♂️</div>
-              <p className="text-base font-cinzel font-bold text-amber-200">No nobles found</p>
+              <p className="text-base font-cinzel font-bold text-amber-200">No players found</p>
               <p className="text-xs text-slate-400">
-                {searchQuery ? `No citizens match "${searchQuery}"` : 'No registered citizens in the kingdom archives yet.'}
+                {searchQuery ? `No players match "${searchQuery}"` : 'No registered players in the database yet.'}
               </p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm text-slate-200">
-                <thead className="bg-[#0c0618] text-xs uppercase text-amber-300 border-b-2 border-amber-500/30 font-cinzel font-black tracking-wider">
+                <thead className="bg-[#0f0a07] text-xs uppercase text-amber-300 border-b border-amber-500/30 font-cinzel font-black tracking-wider">
                   <tr>
                     <th className="py-4 px-4 text-center w-12">#</th>
-                    <th className="py-4 px-4">Noble & ID</th>
+                    <th className="py-4 px-4">Player & ID</th>
                     <th className="py-4 px-4 text-center">Live Status</th>
                     <th className="py-4 px-4 text-right">Points</th>
                     <th className="py-4 px-4 text-center">Matches (W/L)</th>
                     <th className="py-4 px-4 text-center">Win Rate</th>
                     <th className="py-4 px-4">Role Distribution</th>
                     <th className="py-4 px-4 text-center">Guessing</th>
-                    <th className="py-4 px-4">Last Presence</th>
+                    <th className="py-4 px-4">Last Active</th>
                     <th className="py-4 px-4 text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#2a1745]/60">
+                <tbody className="divide-y divide-amber-950/40">
                   {players.map((p, index) => {
                     const stats = p.stats || {};
                     const isOnline = p.onlineStatus?.isOnline;
@@ -311,35 +318,16 @@ export default function AdminDashboard() {
                     return (
                       <tr
                         key={p._id}
-                        className="hover:bg-purple-950/40 transition duration-150 group"
+                        className="hover:bg-amber-950/20 transition duration-150 group"
                       >
-                        {/* Rank */}
                         <td className="py-4 px-4 text-center font-cinzel font-bold text-amber-200/70">
-                          {index === 0 ? (
-                            <span className="text-amber-400 text-base">🥇</span>
-                          ) : index === 1 ? (
-                            <span className="text-slate-300 text-base">🥈</span>
-                          ) : index === 2 ? (
-                            <span className="text-amber-600 text-base">🥉</span>
-                          ) : (
-                            `#${index + 1}`
-                          )}
+                          #{index + 1}
                         </td>
 
-                        {/* Player Info */}
                         <td className="py-4 px-4">
                           <div className="flex items-center gap-3">
-                            <div className="relative">
-                              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-600 to-amber-300 p-[1.5px] shadow-sm">
-                                <div className="w-full h-full bg-[#0d071a] rounded-xl flex items-center justify-center font-bold text-amber-300 text-xs">
-                                  {p.username.slice(0, 2).toUpperCase()}
-                                </div>
-                              </div>
-                              <span
-                                className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-[#130b21] ${
-                                  isOnline ? 'bg-emerald-400 animate-pulse' : 'bg-slate-500'
-                                }`}
-                              />
+                            <div className="w-8 h-8 rounded-lg bg-amber-900 border border-amber-400/80 flex items-center justify-center font-bold text-amber-200 text-xs">
+                              {p.username.slice(0, 2).toUpperCase()}
                             </div>
                             <div>
                               <div className="font-bold text-white group-hover:text-amber-300 transition">
@@ -352,33 +340,23 @@ export default function AdminDashboard() {
                           </div>
                         </td>
 
-                        {/* Live Online Status */}
                         <td className="py-4 px-4 text-center whitespace-nowrap">
                           {isOnline ? (
-                            p.onlineStatus.roomCode ? (
-                              <span className="px-2.5 py-1 rounded-full bg-emerald-950/90 text-emerald-300 border border-emerald-500/50 text-xs font-bold inline-flex items-center justify-center gap-1.5 shadow-sm">
-                                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-                                In Court ({p.onlineStatus.roomCode})
-                              </span>
-                            ) : (
-                              <span className="px-2.5 py-1 rounded-full bg-emerald-950/90 text-emerald-300 border border-emerald-500/50 text-xs font-bold inline-flex items-center justify-center gap-1.5 shadow-sm">
-                                <span className="w-2 h-2 rounded-full bg-emerald-400" />
-                                Online (Lobby)
-                              </span>
-                            )
+                            <span className="px-2.5 py-0.5 rounded-md bg-emerald-950 text-emerald-300 border border-emerald-500/50 text-xs font-bold inline-flex items-center gap-1.5 shadow-sm">
+                              <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                              Online
+                            </span>
                           ) : (
-                            <span className="px-2.5 py-0.5 rounded-full bg-slate-900 text-slate-400 border border-slate-700 text-xs font-semibold">
+                            <span className="px-2.5 py-0.5 rounded-md bg-stone-900 text-stone-400 border border-stone-700 text-xs font-semibold">
                               Offline
                             </span>
                           )}
                         </td>
 
-                        {/* Points */}
                         <td className="py-4 px-4 text-right font-cinzel font-black text-amber-400 text-base">
                           {(p.totalPoints || 0).toLocaleString()}
                         </td>
 
-                        {/* Games (W/L) */}
                         <td className="py-4 px-4 text-center">
                           <span className="font-bold text-emerald-400">{p.gamesWon || 0}W</span>
                           <span className="text-slate-500 mx-1">/</span>
@@ -386,67 +364,53 @@ export default function AdminDashboard() {
                           <div className="text-[11px] text-slate-400">{p.gamesPlayed || 0} total</div>
                         </td>
 
-                        {/* Win Rate */}
                         <td className="py-4 px-4 text-center">
-                          <div className="inline-flex flex-col items-center">
-                            <span className="font-black text-xs text-slate-200 mb-1">{p.winRate || 0}%</span>
-                            <div className="w-16 h-1.5 bg-[#24133d] rounded-full overflow-hidden">
-                              <div
-                                className="h-full bg-gradient-to-r from-amber-500 to-yellow-300 rounded-full"
-                                style={{ width: `${Math.min(100, p.winRate || 0)}%` }}
-                              />
-                            </div>
-                          </div>
+                          <span className="font-bold text-xs text-slate-200">{p.winRate || 0}%</span>
                         </td>
 
-                        {/* Role Breakdown Badges */}
                         <td className="py-4 px-4">
-                          <div className="flex items-center gap-1.5 flex-wrap">
-                            <span className="px-2 py-0.5 rounded-md bg-amber-950/80 text-amber-300 text-[11px] border border-amber-500/40 font-bold" title="Times Raja">
-                              👑 {stats.rajaCount || 0}
+                          <div className="flex items-center gap-1.5 flex-wrap text-[11px] font-bold">
+                            <span className="px-1.5 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-600/40">
+                              R: {stats.rajaCount || 0}
                             </span>
-                            <span className="px-2 py-0.5 rounded-md bg-purple-950/80 text-purple-300 text-[11px] border border-purple-500/40 font-bold" title="Times Mantri">
-                              🧠 {stats.mantriCount || 0}
+                            <span className="px-1.5 py-0.5 rounded bg-stone-900 text-amber-200 border border-stone-600/40">
+                              M: {stats.mantriCount || 0}
                             </span>
-                            <span className="px-2 py-0.5 rounded-md bg-sky-950/80 text-sky-300 text-[11px] border border-sky-500/40 font-bold" title="Times Sipahi">
-                              🛡️ {stats.sipahiCount || 0}
+                            <span className="px-1.5 py-0.5 rounded bg-stone-900 text-stone-300 border border-stone-600/40">
+                              S: {stats.sipahiCount || 0}
                             </span>
-                            <span className="px-2 py-0.5 rounded-md bg-rose-950/80 text-rose-300 text-[11px] border border-rose-500/40 font-bold" title="Times Chor">
-                              🕵️ {stats.chorCount || 0}
+                            <span className="px-1.5 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-600/40">
+                              C: {stats.chorCount || 0}
                             </span>
                           </div>
                         </td>
 
-                        {/* Guess Accuracy */}
                         <td className="py-4 px-4 text-center">
                           <div className="text-xs font-bold">
                             <span className="text-emerald-400">{stats.correctGuesses || 0}✓</span>
                             <span className="text-slate-500 mx-1">·</span>
                             <span className="text-rose-400">{stats.wrongGuesses || 0}✗</span>
                           </div>
-                          <div className="text-[11px] text-slate-400 font-medium">{p.guessAccuracy || 0}% acc</div>
                         </td>
 
-                        {/* Last Active */}
                         <td className="py-4 px-4 text-xs text-amber-200/70 whitespace-nowrap font-medium">
                           {formatDate(p.lastActive || p.updatedAt)}
                         </td>
 
-                        {/* Actions */}
                         <td className="py-4 px-4 text-right">
                           <div className="flex items-center justify-end gap-2">
                             <button
                               onClick={() => handleViewDetails(p)}
-                              className="px-2.5 py-1.5 bg-[#201138] hover:bg-[#2e194f] border border-amber-500/40 rounded-lg text-xs font-cinzel font-bold text-amber-200 transition shadow-sm"
+                              className="px-2.5 py-1.5 bg-[#251910] hover:bg-[#332216] border border-amber-500/40 rounded-lg text-xs font-cinzel font-bold text-amber-200 transition shadow-sm"
                             >
                               Inspect
                             </button>
                             <button
                               onClick={() => setPlayerToDelete(p)}
-                              className="px-2.5 py-1.5 bg-red-950/80 hover:bg-red-900 border border-red-500/60 rounded-lg text-xs font-bold text-red-200 transition flex items-center gap-1 shadow-sm"
-                              title="Permanently Delete User"
+                              className="px-2.5 py-1.5 bg-red-950/80 hover:bg-red-900 border border-red-500/60 rounded-lg text-xs font-bold text-red-200 transition"
+                              title="Delete Account"
                             >
-                              <span>🗑️</span> Delete
+                              Delete
                             </button>
                           </div>
                         </td>
@@ -459,93 +423,72 @@ export default function AdminDashboard() {
           )}
         </div>
 
-        {/* In-App Delete Confirmation Modal */}
+        {/* Delete Confirmation Modal */}
         {playerToDelete && (
           <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-            <div className="bg-[#130b21] border-2 border-red-500/70 rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-5 animate-[fadeIn_0.15s_ease-out] text-white">
+            <div className="bg-[#1a120c] border border-red-500/70 rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-5 text-white">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-2xl bg-red-950/90 border-2 border-red-500/60 flex items-center justify-center text-2xl shadow-inner">
-                  ⚠️
+                <div className="w-12 h-12 rounded-xl bg-red-950/90 border border-red-500/60 flex items-center justify-center text-red-400">
+                  <AlertIcon className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-cinzel font-black text-red-400">Permanently Expel Citizen?</h3>
-                  <p className="text-xs text-red-200/80 font-medium">This castle decree cannot be revoked.</p>
+                  <h3 className="text-lg font-cinzel font-black text-red-400">Delete Player Account?</h3>
+                  <p className="text-xs text-red-200/80 font-medium">This action cannot be undone.</p>
                 </div>
               </div>
 
-              <div className="bg-[#0a0514] border-2 border-red-500/30 rounded-xl p-4 space-y-2 text-xs">
+              <div className="bg-[#0f0a07] border border-red-500/30 rounded-xl p-4 space-y-2 text-xs">
                 <div className="flex justify-between">
-                  <span className="text-amber-300 font-bold">Noble Title:</span>
-                  <span className="font-black text-white text-sm">{playerToDelete.username}</span>
+                  <span className="text-amber-300 font-bold">Username:</span>
+                  <span className="font-bold text-white text-sm">{playerToDelete.username}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-amber-300 font-bold">Scroll ID:</span>
+                  <span className="text-amber-300 font-bold">Database ID:</span>
                   <span className="font-mono text-slate-400">{playerToDelete._id}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-amber-300 font-bold">Score & Matches:</span>
-                  <span className="text-amber-400 font-black">
-                    {(playerToDelete.totalPoints || 0).toLocaleString()} pts ({playerToDelete.gamesPlayed || 0} matches)
+                  <span className="text-amber-300 font-bold">Total Score:</span>
+                  <span className="text-amber-400 font-bold">
+                    {(playerToDelete.totalPoints || 0).toLocaleString()} pts
                   </span>
                 </div>
               </div>
 
-              <p className="text-xs text-red-200 bg-red-950/80 border border-red-500/40 p-3 rounded-xl leading-relaxed font-medium">
-                Expulsion will erase their citizen record from MongoDB, purge all match scores, and terminate any active court connections.
+              <p className="text-xs text-red-200 bg-red-950/80 border border-red-500/40 p-3 rounded-lg leading-relaxed font-medium">
+                This will permanently delete the player's account from the database and remove all accumulated records.
               </p>
 
               <div className="flex gap-3 pt-2">
                 <button
                   onClick={() => setPlayerToDelete(null)}
                   disabled={isDeleting}
-                  className="flex-1 py-3 bg-[#201138] hover:bg-[#2d184e] border border-amber-500/40 rounded-xl text-xs font-cinzel font-bold text-amber-200 transition disabled:opacity-50"
+                  className="flex-1 py-3 bg-[#251910] hover:bg-[#332216] border border-amber-500/40 rounded-lg text-xs font-cinzel font-bold text-amber-200 transition disabled:opacity-50"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={executeDelete}
                   disabled={isDeleting}
-                  className="flex-1 py-3 bg-red-600 hover:bg-red-700 rounded-xl text-xs font-cinzel font-black text-white shadow-md transition disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="flex-1 py-3 bg-red-700 hover:bg-red-800 rounded-lg text-xs font-cinzel font-black text-white shadow-md transition disabled:opacity-50"
                 >
-                  {isDeleting ? (
-                    <>
-                      <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      Expelling...
-                    </>
-                  ) : (
-                    'Expel Citizen 🗑️'
-                  )}
+                  {isDeleting ? 'Deleting...' : 'Confirm Delete'}
                 </button>
               </div>
             </div>
           </div>
         )}
 
-        {/* Player Deep Dive Inspection Modal */}
+        {/* Player Inspection Modal */}
         {selectedPlayer && (
           <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-            <div className="bg-[#130b21] border-2 border-amber-500/40 rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl animate-[fadeIn_0.2s_ease-out] text-white">
-              {/* Modal Header */}
-              <div className="sticky top-0 bg-[#130b21]/98 backdrop-blur border-b-2 border-amber-500/30 p-5 flex items-center justify-between z-10">
+            <div className="bg-[#1a120c] border border-amber-500/40 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl text-white">
+              <div className="sticky top-0 bg-[#1a120c] border-b border-amber-500/30 p-5 flex items-center justify-between z-10">
                 <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-600 to-amber-300 p-[1.5px] shadow">
-                    <div className="w-full h-full bg-[#0d071a] rounded-2xl flex items-center justify-center font-bold text-amber-300 text-base shadow-inner">
-                      {selectedPlayer.username.slice(0, 2).toUpperCase()}
-                    </div>
+                  <div className="w-10 h-10 rounded-lg bg-amber-900 border border-amber-400 flex items-center justify-center font-bold text-amber-200 text-sm">
+                    {selectedPlayer.username.slice(0, 2).toUpperCase()}
                   </div>
                   <div>
-                    <div className="flex items-center gap-2">
-                      <h3 className="text-xl font-cinzel font-black text-white">{selectedPlayer.username}</h3>
-                      {selectedPlayer.onlineStatus?.isOnline ? (
-                        <span className="px-2.5 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-500/50 text-[10px] font-black">
-                          🟢 Online
-                        </span>
-                      ) : (
-                        <span className="px-2.5 py-0.5 rounded-full bg-slate-900 text-slate-400 border border-slate-700 text-[10px] font-bold">
-                          Offline
-                        </span>
-                      )}
-                    </div>
+                    <h3 className="text-xl font-cinzel font-black text-white">{selectedPlayer.username}</h3>
                     <p className="text-xs text-slate-400 font-mono">User ID: {selectedPlayer._id}</p>
                   </div>
                 </div>
@@ -554,138 +497,90 @@ export default function AdminDashboard() {
                     setSelectedPlayer(null);
                     setPlayerDetails(null);
                   }}
-                  className="w-8 h-8 rounded-full bg-[#201138] hover:bg-[#2d184e] border border-amber-500/40 flex items-center justify-center text-amber-200 font-bold transition"
+                  className="w-8 h-8 rounded-lg bg-[#251910] hover:bg-[#332216] border border-amber-500/40 flex items-center justify-center text-amber-200 font-bold transition"
                 >
                   ✕
                 </button>
               </div>
 
-              {/* Modal Body */}
               <div className="p-6 space-y-6">
                 {detailsLoading ? (
                   <div className="py-12">
-                    <LoadingSpinner label="Consulting records..." />
+                    <LoadingSpinner label="Fetching record details..." />
                   </div>
                 ) : (
                   <>
-                    {/* Key Stats */}
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
-                      <div className="bg-[#0a0514] rounded-2xl p-3.5 border-2 border-amber-500/30 shadow-sm">
+                      <div className="bg-[#0f0a07] rounded-xl p-3.5 border border-amber-500/30">
                         <div className="text-amber-300 text-xs font-cinzel font-bold">Total Score</div>
                         <div className="text-2xl font-cinzel font-black text-amber-400 mt-1">
                           {(selectedPlayer.totalPoints || 0).toLocaleString()}
                         </div>
                       </div>
-                      <div className="bg-[#0a0514] rounded-2xl p-3.5 border-2 border-emerald-500/30 shadow-sm">
-                        <div className="text-emerald-300 text-xs font-cinzel font-bold">Victories Won</div>
+                      <div className="bg-[#0f0a07] rounded-xl p-3.5 border border-emerald-500/30">
+                        <div className="text-emerald-300 text-xs font-cinzel font-bold">Matches Won</div>
                         <div className="text-2xl font-cinzel font-black text-emerald-400 mt-1">
                           {selectedPlayer.gamesWon || 0}
                         </div>
                       </div>
-                      <div className="bg-[#0a0514] rounded-2xl p-3.5 border-2 border-purple-500/30 shadow-sm">
-                        <div className="text-purple-300 text-xs font-cinzel font-bold">Win Rate</div>
-                        <div className="text-2xl font-cinzel font-black text-purple-300 mt-1">
+                      <div className="bg-[#0f0a07] rounded-xl p-3.5 border border-amber-500/30">
+                        <div className="text-amber-300 text-xs font-cinzel font-bold">Win Rate</div>
+                        <div className="text-2xl font-cinzel font-black text-amber-300 mt-1">
                           {selectedPlayer.winRate || 0}%
                         </div>
                       </div>
-                      <div className="bg-[#0a0514] rounded-2xl p-3.5 border-2 border-sky-500/30 shadow-sm">
-                        <div className="text-sky-300 text-xs font-cinzel font-bold">Rounds Played</div>
-                        <div className="text-2xl font-cinzel font-black text-sky-400 mt-1">
+                      <div className="bg-[#0f0a07] rounded-xl p-3.5 border border-stone-500/30">
+                        <div className="text-stone-300 text-xs font-cinzel font-bold">Rounds Played</div>
+                        <div className="text-2xl font-cinzel font-black text-stone-200 mt-1">
                           {selectedPlayer.totalRoundsPlayed || 0}
                         </div>
                       </div>
                     </div>
 
-                    {/* Role Breakdown */}
                     <div>
-                      <h4 className="text-xs uppercase font-cinzel font-black text-amber-300 tracking-wider mb-3">
-                        Role Occurrences & Lineage
+                      <h4 className="text-xs uppercase font-cinzel font-bold text-amber-300 tracking-wider mb-3">
+                        Role Distribution
                       </h4>
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                        <div className="bg-amber-950/80 border-2 border-amber-500/40 rounded-2xl p-3 text-center shadow-sm">
-                          <div className="text-amber-300 text-xs font-bold">👑 Raja</div>
+                        <div className="bg-amber-950/80 border border-amber-500/40 rounded-xl p-3 text-center">
+                          <div className="text-amber-300 text-xs font-bold">Raja</div>
                           <div className="text-xl font-black text-white mt-1">
-                            {selectedPlayer.stats?.rajaCount || 0} times
+                            {selectedPlayer.stats?.rajaCount || 0} rounds
                           </div>
                         </div>
-                        <div className="bg-purple-950/80 border-2 border-purple-500/40 rounded-2xl p-3 text-center shadow-sm">
-                          <div className="text-purple-300 text-xs font-bold">🧠 Mantri</div>
+                        <div className="bg-[#1e150f] border border-amber-700/40 rounded-xl p-3 text-center">
+                          <div className="text-amber-200 text-xs font-bold">Mantri</div>
                           <div className="text-xl font-black text-white mt-1">
-                            {selectedPlayer.stats?.mantriCount || 0} times
+                            {selectedPlayer.stats?.mantriCount || 0} rounds
                           </div>
                         </div>
-                        <div className="bg-sky-950/80 border-2 border-sky-500/40 rounded-2xl p-3 text-center shadow-sm">
-                          <div className="text-sky-300 text-xs font-bold">🛡️ Sipahi</div>
+                        <div className="bg-stone-900 border border-stone-700 rounded-xl p-3 text-center">
+                          <div className="text-stone-300 text-xs font-bold">Sipahi</div>
                           <div className="text-xl font-black text-white mt-1">
-                            {selectedPlayer.stats?.sipahiCount || 0} times
+                            {selectedPlayer.stats?.sipahiCount || 0} rounds
                           </div>
                         </div>
-                        <div className="bg-rose-950/80 border-2 border-rose-500/40 rounded-2xl p-3 text-center shadow-sm">
-                          <div className="text-rose-300 text-xs font-bold">🕵️ Chor</div>
+                        <div className="bg-rose-950/80 border border-rose-500/40 rounded-xl p-3 text-center">
+                          <div className="text-rose-300 text-xs font-bold">Chor</div>
                           <div className="text-xl font-black text-white mt-1">
-                            {selectedPlayer.stats?.chorCount || 0} times
+                            {selectedPlayer.stats?.chorCount || 0} rounds
                           </div>
                         </div>
                       </div>
                     </div>
 
-                    {/* Guessing Intel */}
-                    <div className="bg-[#0a0514] border-2 border-amber-500/30 rounded-2xl p-4 space-y-2 shadow-inner">
-                      <h4 className="text-xs uppercase font-cinzel font-black text-amber-300 tracking-wider">
-                        Mantri Deduction Accuracy
-                      </h4>
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-slate-300 font-medium">Correct Guesses:</span>
-                        <span className="font-black text-emerald-400">
-                          {selectedPlayer.stats?.correctGuesses || 0}
-                        </span>
-                      </div>
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-slate-300 font-medium">Failed Guesses (Chor gained points):</span>
-                        <span className="font-black text-rose-400">
-                          {selectedPlayer.stats?.wrongGuesses || 0}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Recent Game Rooms */}
-                    {playerDetails?.recentRooms && playerDetails.recentRooms.length > 0 && (
+                    <div className="border-t border-amber-500/30 pt-4 flex items-center justify-between">
                       <div>
-                        <h4 className="text-xs uppercase font-cinzel font-black text-amber-300 tracking-wider mb-3">
-                          Recent Castle Chambers Attended ({playerDetails.recentRooms.length})
-                        </h4>
-                        <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
-                          {playerDetails.recentRooms.map(r => (
-                            <div
-                              key={r._id}
-                              className="flex items-center justify-between bg-[#0a0514] border-2 border-amber-500/25 rounded-xl px-3.5 py-2.5 text-xs shadow-sm"
-                            >
-                              <span className="font-cinzel text-amber-400 font-black">Room #{r.roomCode}</span>
-                              <span className="text-slate-300 font-medium">
-                                {r.currentRound}/{r.totalRounds} rounds · Status: {r.status}
-                              </span>
-                              <span className="text-slate-400">{formatDate(r.createdAt)}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Danger Zone: Delete Player */}
-                    <div className="border-t-2 border-amber-500/30 pt-4 flex items-center justify-between">
-                      <div>
-                        <div className="text-xs font-cinzel font-black text-red-400">Danger Zone</div>
+                        <div className="text-xs font-cinzel font-bold text-red-400">Danger Zone</div>
                         <div className="text-[11px] text-slate-400">
-                          Permanently purge this citizen profile and match records.
+                          Permanently delete this account and records.
                         </div>
                       </div>
                       <button
-                        onClick={() => {
-                          setPlayerToDelete(selectedPlayer);
-                        }}
-                        className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-cinzel font-black shadow-md transition"
+                        onClick={() => setPlayerToDelete(selectedPlayer)}
+                        className="px-4 py-2 bg-red-700 hover:bg-red-800 text-white rounded-lg text-xs font-cinzel font-black transition"
                       >
-                        Expel Citizen Profile 🗑️
+                        Delete Player Account
                       </button>
                     </div>
                   </>

@@ -1,10 +1,27 @@
 import React, { useState, useEffect } from 'react';
+import { CrownIcon, ScaleIcon, ShieldIcon, KeyIcon, ClockIcon } from '../common/Icons';
 
 const ROLE_INFO = {
-  raja: { label: 'Raja 👑', color: 'border-amber-400 bg-amber-50 text-amber-950', badgeColor: 'bg-amber-100 text-amber-900' },
-  mantri: { label: 'Mantri 🧠', color: 'border-purple-400 bg-purple-50 text-purple-950', badgeColor: 'bg-purple-100 text-purple-900' },
-  sipahi: { label: 'Sipahi 🛡️', color: 'border-sky-400 bg-sky-50 text-sky-950', badgeColor: 'bg-sky-100 text-sky-900' },
-  chor: { label: 'Chor 🕵️', color: 'border-rose-400 bg-rose-50 text-rose-950', badgeColor: 'bg-rose-100 text-rose-900' }
+  raja: {
+    label: 'Raja',
+    color: 'border-amber-500/40 bg-amber-950/40 text-amber-300',
+    icon: CrownIcon
+  },
+  mantri: {
+    label: 'Mantri',
+    color: 'border-purple-500/40 bg-purple-950/40 text-purple-300',
+    icon: ScaleIcon
+  },
+  sipahi: {
+    label: 'Sipahi',
+    color: 'border-sky-500/40 bg-sky-950/40 text-sky-300',
+    icon: ShieldIcon
+  },
+  chor: {
+    label: 'Chor',
+    color: 'border-rose-500/40 bg-rose-950/40 text-rose-300',
+    icon: KeyIcon
+  }
 };
 
 export default function ResultDisplay({ roundData, isTimeout, nextRoundIn = 5 }) {
@@ -27,13 +44,13 @@ export default function ResultDisplay({ roundData, isTimeout, nextRoundIn = 5 })
   const roles = ['raja', 'mantri', 'sipahi', 'chor'];
 
   return (
-    <div className="royal-glass p-6 rounded-3xl border-2 border-amber-400/70 space-y-4 shadow-castle-card animate-[fadeIn_0.3s_ease-out]">
+    <div className="royal-glass p-6 rounded-2xl border border-amber-500/40 space-y-4 shadow-2xl">
       <div className="text-center space-y-1">
-        <span className="text-xs font-cinzel font-black text-[#92400e] uppercase tracking-widest">
-          🏰 Castle Treasury Award
+        <span className="text-xs font-bold text-amber-400 uppercase tracking-wider">
+          Round Points Awarded
         </span>
-        <h3 className="text-lg font-cinzel font-black text-[#2c1a0e]">
-          {isTimeout ? '⌛ Time Expired — Chor Escaped Over Castle Walls!' : 'Round Resolution & Points Awarded'}
+        <h3 className="text-lg font-black text-white">
+          {isTimeout ? 'Time Expired: The Chor Escapes!' : 'Round Results & Scores'}
         </h3>
       </div>
 
@@ -41,16 +58,25 @@ export default function ResultDisplay({ roundData, isTimeout, nextRoundIn = 5 })
         {roles.map(role => {
           const info = ROLE_INFO[role];
           const player = roundData[role];
+          const IconComp = info.icon;
+
           return (
             <div
               key={role}
-              className={`flex items-center justify-between p-3.5 rounded-2xl border-2 ${info.color} shadow-sm`}
+              className={`flex items-center justify-between p-3.5 rounded-xl border ${info.color} shadow-sm backdrop-blur-md`}
             >
-              <div>
-                <span className="font-cinzel font-black text-xs uppercase tracking-wider block">{info.label}</span>
-                <span className="font-bold text-[#2c1a0e] text-sm">{player?.username}</span>
+              <div className="flex items-center gap-2.5">
+                <div className="p-1.5 rounded-lg bg-slate-900/80 border border-white/10">
+                  <IconComp className="w-4 h-4 text-current" />
+                </div>
+                <div>
+                  <span className="font-bold text-xs uppercase tracking-wider block opacity-90">
+                    {info.label}
+                  </span>
+                  <span className="font-bold text-white text-sm">{player?.username}</span>
+                </div>
               </div>
-              <span className="font-cinzel font-black text-base text-amber-900 bg-white/90 px-3 py-1 rounded-xl border border-amber-300 shadow-inner">
+              <span className="font-black text-base text-amber-300 bg-slate-900/90 px-3 py-1 rounded-lg border border-amber-500/40 shadow-inner">
                 +{player?.points} pts
               </span>
             </div>
@@ -58,14 +84,15 @@ export default function ResultDisplay({ roundData, isTimeout, nextRoundIn = 5 })
         })}
       </div>
 
-      {/* Next Round Countdown Progress */}
-      <div className="pt-2 border-t border-[#d8c5a2] text-center space-y-1.5">
-        <div className="text-xs font-cinzel font-bold text-[#78350f] flex items-center justify-center gap-1.5">
-          <span>⏳</span> Next Castle Round commencing in <span className="text-amber-950 font-black text-sm">{countdown}s</span>...
+      {/* Next Round Countdown */}
+      <div className="pt-2 border-t border-white/10 text-center space-y-1.5">
+        <div className="text-xs font-bold text-amber-400 flex items-center justify-center gap-1.5">
+          <ClockIcon className="w-3.5 h-3.5 text-amber-400" />
+          <span>Next round starts in <span className="text-white font-black text-sm">{countdown}s</span>...</span>
         </div>
-        <div className="w-full h-2 bg-[#ebdcc2] rounded-full overflow-hidden">
+        <div className="w-full h-2 bg-slate-900 rounded-lg overflow-hidden border border-white/10">
           <div
-            className="h-full bg-gradient-to-r from-amber-500 to-yellow-400 rounded-full transition-all duration-500"
+            className="h-full bg-gradient-to-r from-amber-500 to-yellow-400 transition-all duration-500 rounded-lg"
             style={{ width: `${Math.max(0, (countdown / nextRoundIn) * 100)}%` }}
           />
         </div>

@@ -7,25 +7,26 @@ function registerRoomHandlers(io, socket) {
   socket.on('room:join', async ({ roomCode }) => {
     try {
       if (!roomCode) return socket.emit('error', { message: 'Castle room code is required' });
+      const cleanCode = String(roomCode).trim();
 
-      const dbRoom = await Room.findOne({ roomCode });
-      if (!dbRoom) return socket.emit('error', { message: `Castle Chamber #${roomCode} not found` });
+      const dbRoom = await Room.findOne({ roomCode: cleanCode });
+      if (!dbRoom) return socket.emit('error', { message: `Castle Chamber #${cleanCode} not found` });
 
-      socket.join(roomCode);
-      socket.data.roomCode = roomCode;
+      socket.join(cleanCode);
+      socket.data.roomCode = cleanCode;
 
-      let memRoom = getRoom(roomCode);
+      let memRoom = getRoom(cleanCode);
       if (!memRoom) {
-        memRoom = setRoom(roomCode, {
-          roomCode,
+        memRoom = setRoom(cleanCode, {
+          roomCode: cleanCode,
           hostId: String(dbRoom.hostId),
           players: dbRoom.players.map(p => ({
             userId: p.userId ? String(p.userId) : null,
             username: p.username,
-            isBot: p.isBot,
+            isBot: !!p.isBot,
             personality: p.personality || null,
             socketId: null,
-            isReady: p.isReady
+            isReady: p.isReady !== false
           })),
           status: dbRoom.status,
           maxPlayers: dbRoom.maxPlayers || 4,
@@ -34,6 +35,20 @@ function registerRoomHandlers(io, socket) {
           scores: {},
           currentChits: null,
           chatLog: []
+        });
+      } else {
+        // Sync any players present in DB but missing from in-memory room
+        dbRoom.players.forEach(dp => {
+          if (dp.userId && !memRoom.players.some(mp => String(mp.userId) === String(dp.userId))) {
+            memRoom.players.push({
+              userId: String(dp.userId),
+              username: dp.username,
+              isBot: !!dp.isBot,
+              personality: dp.personality || null,
+              socketId: null,
+              isReady: dp.isReady !== false
+            });
+          }
         });
       }
 
@@ -79,9 +94,15 @@ function registerRoomHandlers(io, socket) {
         memRoom.scores[playerKey] = 0;
       }
 
-      io.to(roomCode).emit('room:player_joined', { player });
-      io.to(roomCode).emit('room:update', { room: memRoom });
-      socket.emit('room:joined', { roomCode, players: memRoom.players, hostId: String(memRoom.hostId) });
+      io.to(cleanCode).emit('room:player_joined', { player });
+      io.to(cleanCode).emit('room:update', { room: memRoom });
+      socket.emit('room:joined', {
+        roomCode: cleanCode,
+        players: memRoom.players,
+        hostId: String(memRoom.hostId),
+        status: memRoom.status,
+        totalRounds: memRoom.totalRounds
+      });
     } catch (err) {
       console.error('Socket room:join error:', err);
       socket.emit('error', { message: err.message || 'Failed to join castle chamber' });

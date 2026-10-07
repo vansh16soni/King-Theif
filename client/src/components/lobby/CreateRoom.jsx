@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../../utils/api';
+import { useGame } from '../../contexts/GameContext';
+import { CrownIcon, AlertIcon } from '../common/Icons';
 
 export default function CreateRoom() {
   const [totalRounds, setTotalRounds] = useState(10);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const { setInitialRoom, joinRoomChannel } = useGame();
   const navigate = useNavigate();
 
   async function handleCreate() {
@@ -13,7 +16,11 @@ export default function CreateRoom() {
     setLoading(true);
     try {
       const { room } = await api.createRoom(totalRounds);
-      navigate(`/room/${room.roomCode}`);
+      if (room) {
+        setInitialRoom(room);
+        joinRoomChannel(room.roomCode);
+        navigate(`/room/${room.roomCode}`);
+      }
     } catch (err) {
       setError(err.message);
     } finally {
@@ -22,29 +29,30 @@ export default function CreateRoom() {
   }
 
   return (
-    <div className="royal-glass p-7 rounded-3xl space-y-5 shadow-castle-card relative overflow-hidden">
-      <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500" />
+    <div className="royal-glass p-7 rounded-2xl space-y-5 shadow-2xl relative overflow-hidden border border-white/15">
+      <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600" />
       
       <div className="flex items-center gap-3">
-        <div className="w-12 h-12 rounded-2xl bg-amber-100 border-2 border-amber-400/80 flex items-center justify-center text-2xl shadow-inner">
-          🏰
+        <div className="w-12 h-12 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 shadow-inner">
+          <CrownIcon className="w-6 h-6 text-amber-400" />
         </div>
         <div>
-          <h2 className="text-lg font-cinzel font-black text-[#78350f] tracking-wide uppercase">
-            Host Castle Darbar
+          <h2 className="text-lg font-black text-amber-300 tracking-wide uppercase">
+            Create Room
           </h2>
-          <p className="text-xs text-[#8c6d53] font-medium">Create a new private court chamber</p>
+          <p className="text-xs text-slate-300 font-medium">Host a private multiplayer game room</p>
         </div>
       </div>
 
       {error && (
-        <p className="text-red-800 text-xs bg-red-50 p-3 rounded-xl border border-red-300 font-medium">
-          ⚠️ {error}
-        </p>
+        <div className="text-red-200 text-xs bg-red-950/80 p-3 rounded-xl border border-red-500/60 font-medium flex items-center gap-2">
+          <AlertIcon className="w-4 h-4 text-red-400 shrink-0" />
+          <span>{error}</span>
+        </div>
       )}
 
-      <label className="block text-xs font-cinzel font-bold text-[#5c3e28] uppercase tracking-wider">
-        Court Rounds (10 - 15)
+      <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider">
+        Total Rounds (10 to 15)
         <div className="mt-2.5 flex items-center gap-3">
           <input
             type="range"
@@ -52,9 +60,9 @@ export default function CreateRoom() {
             max={15}
             value={totalRounds}
             onChange={e => setTotalRounds(Number(e.target.value))}
-            className="flex-1 accent-amber-600 cursor-pointer h-2.5 bg-[#ebdcc2] rounded-lg"
+            className="flex-1 accent-amber-500 cursor-pointer h-2 bg-slate-800 rounded-lg focus-visible:ring-2 focus-visible:ring-amber-500"
           />
-          <span className="w-12 text-center font-black text-amber-900 text-lg bg-[#fef9ee] border-2 border-amber-400/70 py-1 rounded-xl shadow-inner">
+          <span className="w-12 text-center font-black text-amber-400 text-lg bg-slate-900/90 border border-amber-500/40 py-1 rounded-xl shadow-inner">
             {totalRounds}
           </span>
         </div>
@@ -63,9 +71,10 @@ export default function CreateRoom() {
       <button
         onClick={handleCreate}
         disabled={loading}
-        className="w-full py-4 royal-btn-gold rounded-xl font-cinzel font-black text-sm uppercase tracking-wider transition disabled:opacity-50 flex items-center justify-center gap-2"
+        className="w-full py-3.5 royal-btn-gold rounded-xl font-black text-xs sm:text-sm uppercase tracking-wider transition disabled:opacity-50 flex items-center justify-center gap-2 focus-visible:ring-2 focus-visible:ring-amber-500 shadow-lg"
       >
-        {loading ? 'Convening Castle Council...' : 'Summon Castle Court 🏛️'}
+        <CrownIcon className="w-4 h-4 text-slate-950" />
+        <span>{loading ? 'Creating Room...' : 'Create Room'}</span>
       </button>
     </div>
   );

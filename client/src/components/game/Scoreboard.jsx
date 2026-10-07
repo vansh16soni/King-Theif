@@ -1,4 +1,5 @@
 import React from 'react';
+import { TrophyIcon, CrownIcon } from '../common/Icons';
 
 export default function Scoreboard({ players = [], scores = {} }) {
   const sorted = [...(players || [])].sort((a, b) => {
@@ -8,12 +9,13 @@ export default function Scoreboard({ players = [], scores = {} }) {
   });
 
   return (
-    <div className="royal-glass rounded-3xl p-5 shadow-castle-card relative overflow-hidden">
-      <div className="flex items-center justify-between mb-3 border-b-2 border-[#d8c5a2] pb-2.5">
-        <h3 className="font-cinzel font-black text-[#78350f] text-sm tracking-wider uppercase flex items-center gap-1.5">
-          <span>🏆</span> Castle Leaderboard
+    <div className="royal-glass rounded-2xl p-5 shadow-2xl relative overflow-hidden border border-white/15">
+      <div className="flex items-center justify-between mb-3 border-b border-white/10 pb-2.5">
+        <h3 className="font-black text-amber-400 text-sm tracking-wider uppercase flex items-center gap-1.5">
+          <TrophyIcon className="w-4 h-4 text-amber-400" />
+          <span>Leaderboard</span>
         </h3>
-        <span className="text-[10px] text-[#8c6d53] font-cinzel uppercase font-black">Score</span>
+        <span className="text-[10px] text-slate-400 uppercase font-bold">Points</span>
       </div>
 
       <ul className="space-y-2">
@@ -22,26 +24,27 @@ export default function Scoreboard({ players = [], scores = {} }) {
           return (
             <li
               key={key}
-              className={`flex items-center justify-between p-2.5 rounded-2xl border-2 transition ${
+              className={`flex items-center justify-between p-2.5 rounded-xl border transition ${
                 idx === 0
-                  ? 'bg-amber-100/90 border-amber-400 shadow-sm'
-                  : 'bg-[#fffdf8] border-[#e2d5bd]'
+                  ? 'bg-amber-950/60 border-amber-400/80 shadow-md'
+                  : 'bg-slate-900/60 border-white/10'
               }`}
             >
               <div className="flex items-center gap-2.5">
-                <span className="w-6 text-center font-cinzel font-black text-sm">
-                  {idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `#${idx + 1}`}
+                <span className="w-6 text-center font-black text-xs text-amber-400">
+                  #{idx + 1}
                 </span>
-                <span className="font-bold text-xs sm:text-sm text-[#2c1a0e] flex items-center gap-1">
-                  {p.username}
+                <span className="font-bold text-xs sm:text-sm text-white flex items-center gap-1.5">
+                  {idx === 0 && <CrownIcon className="w-3.5 h-3.5 text-amber-400" />}
+                  <span>{p.username}</span>
                   {p.isBot && (
-                    <span className="text-[10px] px-1.5 py-0.2 rounded-md bg-purple-100 text-purple-900 border border-purple-300 font-bold">
-                      🤖 Bot
+                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold">
+                      AI
                     </span>
                   )}
                 </span>
               </div>
-              <span className="font-cinzel font-black text-sm text-amber-900">
+              <span className="font-black text-sm text-amber-300">
                 {(scores[key] || 0).toLocaleString()} pts
               </span>
             </li>

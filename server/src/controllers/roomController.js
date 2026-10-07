@@ -12,7 +12,33 @@ async function create(req, res, next) {
 async function join(req, res, next) {
   try {
     const { roomCode } = req.body;
-    const room = await joinRoom(roomCode, req.userId, req.username);
+    const cleanCode = String(roomCode || '').trim();
+    const room = await joinRoom(cleanCode, req.userId, req.username);
+
+    // Sync in-memory gameState if exists and broadcast update to connected players
+    try {
+      const { getRoom } = require('../socket/gameState');
+      const memRoom = getRoom(cleanCode);
+      const io = req.app.get('io');
+      if (memRoom) {
+        if (!memRoom.players.some(p => String(p.userId) === String(req.userId))) {
+          memRoom.players.push({
+            userId: String(req.userId),
+            username: req.username,
+            isBot: false,
+            personality: null,
+            socketId: null,
+            isReady: true
+          });
+        }
+        if (io) {
+          io.to(cleanCode).emit('room:update', { room: memRoom });
+        }
+      }
+    } catch (syncErr) {
+      console.warn('Failed to sync in-memory room on HTTP join:', syncErr);
+    }
+
     res.json({ room });
   } catch (err) { next(err); }
 }

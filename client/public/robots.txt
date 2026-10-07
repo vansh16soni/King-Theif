@@ -1,0 +1,20 @@
+# Robots.txt for Raja Mantri Chor Sipahi
+# Canonical: https://rajamantri.in
+
+User-agent: *
+Allow: /
+Allow: /lobby
+Allow: /profile
+Allow: /privacy
+Allow: /terms
+Allow: /cookies
+Allow: /login
+Allow: /register
+
+# Disallow private transient match sessions and administrative control panel
+Disallow: /room/
+Disallow: /admin
+Disallow: /admin/
+Disallow: /api/
+
+Sitemap: https://rajamantri.in/sitemap.xml

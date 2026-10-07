@@ -1,0 +1,21 @@
+# Raja Mantri Chor Sipahi (RMCS)
+> Digital multiplayer recreation of the traditional Indian social deduction board game.
+
+## Overview
+Raja Mantri Chor Sipahi (King, Minister, Thief, Soldier) is a 4-player social deduction parlor game originated in India. Players are secretly dealt chits for four roles:
+- Raja (King): Receives 1,000 points automatically.
+- Mantri (Minister): Tasked with deducing which of the remaining two players is the Sipahi and which is the Chor. If correct, awards 500 points; if wrong, awards 0 points.
+- Sipahi (Soldier): Receives 300 points regardless of deduction outcome.
+- Chor (Thief): Receives 0 points if caught by the Mantri, or 500 stolen points if the Mantri guesses incorrectly.
+
+## Technology Stack
+- Frontend: React 18, Vite, Tailwind CSS, Socket.io-client.
+- Backend: Node.js, Express, Socket.io, MongoDB, OpenAI LLM integration for bot persona behavior.
+- Hosting & Compliance: Responsive Single Page Application, DPDP Act 2023 compliant data governance, zero tracking pixels.
+
+## Canonical Resources
+- Web Application: https://rajamantri.in
+- Lobby: https://rajamantri.in/lobby
+- Privacy Policy (DPDP Act 2023): https://rajamantri.in/privacy
+- Terms and Conditions: https://rajamantri.in/terms
+- Cookie Policy: https://rajamantri.in/cookies

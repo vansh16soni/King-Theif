@@ -1,18 +1,46 @@
 import { io } from 'socket.io-client';
 
-const getSocketUrl = () => {
-  if (import.meta.env.VITE_SOCKET_URL) return import.meta.env.VITE_SOCKET_URL;
-  const host = typeof window !== 'undefined' && window.location.hostname ? window.location.hostname : 'localhost';
-  return `http://${host}:5000`;
-};
+export const getSocketUrl = () => {
+  const envUrl = import.meta.env.VITE_SOCKET_URL;
+  if (typeof window !== 'undefined') {
+    const { hostname, protocol } = window.location;
+    const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1';
 
-const SOCKET_URL = getSocketUrl();
+    if (envUrl) {
+      const isEnvLocal = envUrl.includes('localhost') || envUrl.includes('127.0.0.1');
+      if (!isLocalhost && isEnvLocal) {
+        return `${protocol}//${hostname}:5000`;
+      }
+      return envUrl.endsWith('/') ? envUrl.slice(0, -1) : envUrl;
+    }
+
+    if (isLocalhost) return 'http://localhost:5000';
+    return `${protocol}//${hostname}:5000`;
+  }
+  return envUrl || 'http://localhost:5000';
+};
 
 let socket = null;
 
 export function connectSocket(token) {
-  if (socket) socket.disconnect();
-  socket = io(SOCKET_URL, { auth: { token } });
+  if (socket?.connected) {
+    return socket;
+  }
+  if (socket) {
+    socket.disconnect();
+    socket = null;
+  }
+
+  const socketUrl = getSocketUrl();
+  socket = io(socketUrl, {
+    auth: { token },
+    transports: ['websocket', 'polling'],
+    reconnection: true,
+    reconnectionAttempts: 15,
+    reconnectionDelay: 1000,
+    timeout: 10000
+  });
+
   return socket;
 }
 
@@ -21,6 +49,8 @@ export function getSocket() {
 }
 
 export function disconnectSocket() {
-  if (socket) socket.disconnect();
-  socket = null;
+  if (socket) {
+    socket.disconnect();
+    socket = null;
+  }
 }

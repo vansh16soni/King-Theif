@@ -15,11 +15,11 @@ export default function MessageInput({ onSend }) {
       <input
         value={text}
         onChange={e => setText(e.target.value)}
-        placeholder="Whisper to castle courtiers..."
+        placeholder="Type a message or bluff..."
         maxLength={300}
-        className="flex-1 px-3 py-2 rounded-xl bg-[#fefaf2] border-2 border-[#dccab0] text-[#2c1a0e] placeholder-[#a68c74] text-xs shadow-inner focus:outline-none focus:border-amber-500 font-medium transition"
+        className="flex-1 px-3 py-2 rounded-xl bg-slate-900/80 border border-white/10 text-white placeholder-slate-500 text-xs shadow-inner focus:outline-none focus:border-amber-400 font-medium transition"
       />
-      <button className="px-3.5 py-2 royal-btn-gold rounded-xl text-xs font-cinzel font-black uppercase tracking-wider shrink-0 shadow-sm">
+      <button className="px-3.5 py-2 royal-btn-gold rounded-xl text-xs font-black uppercase tracking-wider shrink-0 shadow-md">
         Send
       </button>
     </form>

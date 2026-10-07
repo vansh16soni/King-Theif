@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2a1609" />
+      <stop offset="50%" stop-color="#190e06" />
+      <stop offset="100%" stop-color="#0d0703" />
+    </linearGradient>
+    <linearGradient id="goldText" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fde68a" />
+      <stop offset="40%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#b45309" />
+    </linearGradient>
+    <linearGradient id="goldBorder" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d97706" />
+      <stop offset="50%" stop-color="#fef08a" />
+      <stop offset="100%" stop-color="#92400e" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bgGrad)" />
+
+  <!-- Outer Border Frame -->
+  <rect x="30" y="30" width="1140" height="570" rx="16" fill="none" stroke="url(#goldBorder)" stroke-width="3" opacity="0.6" />
+  <rect x="40" y="40" width="1120" height="550" rx="12" fill="none" stroke="#78350f" stroke-width="1.5" opacity="0.4" />
+
+  <!-- Shield & Crown Emblem -->
+  <g transform="translate(600, 190)">
+    <path d="M0 -70 L48 -45 V0 C48 35 25 58 0 70 C-25 58 -48 35 -48 0 V-45 Z" fill="#2d170b" stroke="url(#goldText)" stroke-width="3" />
+    <!-- Crown -->
+    <path d="M-22 18 L-15 -6 L0 5 L15 -6 L22 18 Z" fill="url(#goldText)" />
+    <circle cx="-15" cy="-12" r="3" fill="#fef08a" />
+    <circle cx="0" cy="-1" r="3.5" fill="#fef08a" />
+    <circle cx="15" cy="-12" r="3" fill="#fef08a" />
+  </g>
+
+  <!-- Title -->
+  <text x="600" y="340" text-anchor="middle" font-family="'Cinzel', serif, Georgia" font-size="52" font-weight="900" letter-spacing="4" fill="url(#goldText)">
+    RAJA MANTRI CHOR SIPAHI
+  </text>
+
+  <!-- Subtitle -->
+  <text x="600" y="400" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif, Arial" font-size="22" font-weight="600" letter-spacing="1.5" fill="#d4c2a3">
+    Traditional Indian Multiplayer Social Deduction Strategy Game
+  </text>
+
+  <!-- Role Badges -->
+  <g transform="translate(600, 480)" text-anchor="middle" font-family="'Cinzel', serif" font-size="16" font-weight="700">
+    <!-- Raja -->
+    <rect x="-340" y="-22" width="150" height="44" rx="8" fill="#451a03" stroke="#b45309" stroke-width="1.5" />
+    <text x="-265" y="6" fill="#fef08a">RAJA (1000)</text>
+
+    <!-- Mantri -->
+    <rect x="-160" y="-22" width="150" height="44" rx="8" fill="#2d170b" stroke="#92400e" stroke-width="1.5" />
+    <text x="-85" y="6" fill="#fcd34d">MANTRI (500)</text>
+
+    <!-- Sipahi -->
+    <rect x="20" y="-22" width="150" height="44" rx="8" fill="#1e293b" stroke="#64748b" stroke-width="1.5" />
+    <text x="95" y="6" fill="#cbd5e1">SIPAHI (300)</text>
+
+    <!-- Chor -->
+    <rect x="200" y="-22" width="150" height="44" rx="8" fill="#3b0764" stroke="#7e22ce" stroke-width="1.5" />
+    <text x="275" y="6" fill="#f43f5e">CHOR (0/500)</text>
+  </g>
+
+  <!-- Footer Tag -->
+  <text x="600" y="565" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-size="14" font-weight="500" fill="#a89279">
+    https://rajamantri.in • Bangalore, India • DPDP Act 2023 Compliant
+  </text>
+</svg>

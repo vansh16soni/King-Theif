@@ -1,7 +1,21 @@
 const getApiUrl = () => {
-  if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
-  const host = typeof window !== 'undefined' && window.location.hostname ? window.location.hostname : 'localhost';
-  return `http://${host}:5000/api`;
+  const envUrl = import.meta.env.VITE_API_URL;
+  if (typeof window !== 'undefined') {
+    const { hostname, protocol } = window.location;
+    const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1';
+
+    if (envUrl) {
+      const isEnvLocal = envUrl.includes('localhost') || envUrl.includes('127.0.0.1');
+      if (!isLocalhost && isEnvLocal) {
+        return `${protocol}//${hostname}:5000/api`;
+      }
+      return envUrl.endsWith('/') ? envUrl.slice(0, -1) : envUrl;
+    }
+
+    if (isLocalhost) return 'http://localhost:5000/api';
+    return `${protocol}//${hostname}:5000/api`;
+  }
+  return envUrl || 'http://localhost:5000/api';
 };
 
 const API_URL = getApiUrl();
