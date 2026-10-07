@@ -21,6 +21,10 @@ const initialState = {
   guessTimeLimit: 25,
   lastResult: null,
   isTimeout: false,
+  isCorrect: null,
+  lastRoundOutcome: null,
+  chorUsername: null,
+  guessedChorUsername: null,
   nextRoundIn: null,
   scores: {},
   winner: null,
@@ -87,7 +91,8 @@ function reducer(state, action) {
         isRoundStarting: true,
         roundNumber: action.roundNumber,
         totalRounds: action.totalRounds || state.totalRounds,
-        roundPauseSeconds: Math.ceil((action.pauseDurationMs || 3500) / 1000),
+        roundPauseSeconds: Math.ceil((action.pauseDurationMs || 4000) / 1000),
+        lastRoundOutcome: action.lastRoundOutcome || state.lastRoundOutcome || null,
         lastResult: null,
         isMantriTurn: false,
         guessDeadline: null
@@ -99,7 +104,8 @@ function reducer(state, action) {
         totalRounds: action.totalRounds || state.totalRounds,
         yourRole: action.yourRole,
         isRoundStarting: true,
-        roundPauseSeconds: Math.ceil((action.pauseDurationMs || 3500) / 1000),
+        roundPauseSeconds: Math.ceil((action.pauseDurationMs || 4000) / 1000),
+        lastRoundOutcome: action.lastRoundOutcome || state.lastRoundOutcome || null,
         rajaPlayer: null,
         mantriUsername: null,
         availablePlayers: [],
@@ -125,7 +131,16 @@ function reducer(state, action) {
     case 'BOT_THINKING':
       return { ...state, botThinking: action.botName };
     case 'GUESS_RESULT':
-      return { ...state, botThinking: null, guessDeadline: null };
+      return {
+        ...state,
+        botThinking: null,
+        guessDeadline: null,
+        isCorrect: action.isCorrect,
+        isTimeout: !!action.isTimeout,
+        mantriUsername: action.mantriUsername,
+        chorUsername: action.chorUsername,
+        guessedChorUsername: action.guessedChorUsername
+      };
     case 'GUESS_TIMEOUT':
       return { ...state, isTimeout: true, guessDeadline: null };
     case 'ROUND_END':
@@ -134,6 +149,18 @@ function reducer(state, action) {
         lastResult: action.roundData,
         scores: action.scores,
         isTimeout: !!action.isTimeout,
+        isCorrect: action.isCorrect,
+        mantriUsername: action.mantriUsername,
+        chorUsername: action.chorUsername,
+        guessedChorUsername: action.guessedChorUsername,
+        lastRoundOutcome: action.lastRoundOutcome || {
+          roundNumber: state.roundNumber,
+          isCorrect: !!action.isCorrect,
+          isTimeout: !!action.isTimeout,
+          mantriUsername: action.mantriUsername,
+          chorUsername: action.chorUsername,
+          guessedChorUsername: action.guessedChorUsername
+        },
         nextRoundIn: action.nextRoundInSec || 5,
         isMantriTurn: false,
         guessDeadline: null

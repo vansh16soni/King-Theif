@@ -168,7 +168,8 @@ export default function GameRoom() {
                 roundNumber={state.roundNumber}
                 totalRounds={state.totalRounds}
                 yourRole={state.yourRole}
-                durationSeconds={state.roundPauseSeconds || 3.5}
+                lastRoundOutcome={state.lastRoundOutcome}
+                durationSeconds={state.roundPauseSeconds || 4}
               />
             )}
 
@@ -198,6 +199,10 @@ export default function GameRoom() {
               <ResultDisplay
                 roundData={state.lastResult}
                 isTimeout={state.isTimeout}
+                isCorrect={state.isCorrect}
+                mantriUsername={state.mantriUsername}
+                chorUsername={state.chorUsername}
+                nextRoundNumber={state.roundNumber + 1}
                 nextRoundIn={state.nextRoundIn || 5}
               />
             )}

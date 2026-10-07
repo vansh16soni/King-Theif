@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CrownIcon, ScaleIcon, ShieldIcon, KeyIcon, ClockIcon, SparklesIcon } from '../common/Icons';
+import { CrownIcon, ScaleIcon, ShieldIcon, KeyIcon, ClockIcon, SparklesIcon, CheckIcon, CrossIcon } from '../common/Icons';
 import { useTheme } from '../../contexts/ThemeContext';
 
 const ROLE_PREVIEWS = {
@@ -9,7 +9,13 @@ const ROLE_PREVIEWS = {
   chor: { name: 'CHOR', color: 'text-rose-400', bg: 'bg-rose-500/20 border-rose-500/40', icon: KeyIcon, points: '0 / 500 pts' }
 };
 
-export default function RoundStartView({ roundNumber, totalRounds, yourRole, durationSeconds = 3.5 }) {
+export default function RoundStartView({
+  roundNumber,
+  totalRounds,
+  yourRole,
+  lastRoundOutcome,
+  durationSeconds = 4
+}) {
   const { isDark } = useTheme();
   const [timeLeft, setTimeLeft] = useState(durationSeconds);
   const roleInfo = yourRole ? ROLE_PREVIEWS[yourRole] : null;
@@ -31,26 +37,84 @@ export default function RoundStartView({ roundNumber, totalRounds, yourRole, dur
   const progressPercent = Math.min(100, Math.max(0, (timeLeft / durationSeconds) * 100));
 
   return (
-    <div className="royal-glass p-6 sm:p-7 rounded-2xl border-2 border-amber-500/60 shadow-2xl relative overflow-hidden text-center space-y-4 animate-in fade-in zoom-in-95 duration-300">
+    <div className="royal-glass p-5 sm:p-7 rounded-2xl border-2 border-amber-500/60 shadow-2xl relative overflow-hidden text-center space-y-4 animate-in fade-in zoom-in-95 duration-300">
       <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600 animate-pulse" />
 
-      {/* Round Badge */}
-      <div className="flex items-center justify-center gap-2">
-        <span className="px-4 py-1 rounded-full bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950 font-black text-xs uppercase tracking-widest shadow-md flex items-center gap-1.5 animate-bounce">
-          <SparklesIcon className="w-3.5 h-3.5" />
-          <span>ROUND {roundNumber} (R{roundNumber}) STARTED</span>
-          <SparklesIcon className="w-3.5 h-3.5" />
-        </span>
-      </div>
+      {/* Previous Round Outcome (Did Mantri Guess Right or Not?) */}
+      {lastRoundOutcome && (
+        <div
+          className={`p-3.5 sm:p-4 rounded-xl border-2 shadow-lg text-center space-y-1 transition-all ${
+            lastRoundOutcome.isCorrect
+              ? 'border-emerald-500/60 bg-emerald-950/50 text-emerald-300 shadow-emerald-900/30'
+              : lastRoundOutcome.isTimeout
+              ? 'border-amber-500/60 bg-amber-950/50 text-amber-300 shadow-amber-900/30'
+              : 'border-rose-500/60 bg-rose-950/50 text-rose-300 shadow-rose-900/30'
+          }`}
+        >
+          <div className="flex items-center justify-center gap-2">
+            {lastRoundOutcome.isCorrect ? (
+              <span className="px-3 py-0.5 rounded-full bg-emerald-500 text-slate-950 font-black text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-md">
+                <CheckIcon className="w-3.5 h-3.5 text-slate-950 stroke-[3]" />
+                <span>MANTRI GUESSED RIGHT!</span>
+              </span>
+            ) : lastRoundOutcome.isTimeout ? (
+              <span className="px-3 py-0.5 rounded-full bg-amber-500 text-slate-950 font-black text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-md">
+                <ClockIcon className="w-3.5 h-3.5 text-slate-950 stroke-[3]" />
+                <span>MANTRI TIMED OUT!</span>
+              </span>
+            ) : (
+              <span className="px-3 py-0.5 rounded-full bg-rose-500 text-white font-black text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-md">
+                <CrossIcon className="w-3.5 h-3.5 text-white stroke-[3]" />
+                <span>MANTRI GUESSED WRONG!</span>
+              </span>
+            )}
+          </div>
 
-      {/* Main Announcement */}
-      <div className="space-y-1">
-        <h2 className="text-2xl sm:text-3xl font-black gold-gradient-text uppercase tracking-wide">
-          Round {roundNumber} &bull; R{roundNumber} is Now Active!
-        </h2>
-        <p className={`text-xs sm:text-sm font-semibold max-w-lg mx-auto leading-relaxed ${isDark ? 'text-slate-200' : 'text-slate-700'}`}>
-          Fresh royal chits dealt face-down to all players &bull; Court is in session.
-        </p>
+          <p className="text-xs sm:text-sm font-bold text-white pt-0.5">
+            {lastRoundOutcome.isCorrect ? (
+              <>
+                Mantri <span className="text-emerald-400 font-black">{lastRoundOutcome.mantriUsername}</span> caught Chor <span className="text-rose-400 font-black">{lastRoundOutcome.chorUsername}</span> correctly!
+                <span className="block text-[11px] sm:text-xs text-emerald-300/90 font-semibold mt-0.5">
+                  Chor was captured &bull; +500 points awarded to Mantri
+                </span>
+              </>
+            ) : lastRoundOutcome.isTimeout ? (
+              <>
+                Mantri <span className="text-amber-400 font-black">{lastRoundOutcome.mantriUsername}</span> ran out of time!
+                <span className="block text-[11px] sm:text-xs text-amber-300/90 font-semibold mt-0.5">
+                  Chor <span className="text-rose-400 font-black">{lastRoundOutcome.chorUsername}</span> escaped with the loot &bull; +500 points to Chor
+                </span>
+              </>
+            ) : (
+              <>
+                Mantri <span className="text-amber-400 font-black">{lastRoundOutcome.mantriUsername}</span> failed to find the thief!
+                <span className="block text-[11px] sm:text-xs text-rose-300/90 font-semibold mt-0.5">
+                  Chor <span className="text-rose-400 font-black">{lastRoundOutcome.chorUsername}</span> successfully escaped &bull; +500 points to Chor
+                </span>
+              </>
+            )}
+          </p>
+        </div>
+      )}
+
+      {/* Ready for Next Round Section */}
+      <div className="space-y-2 pt-0.5">
+        <div className="flex items-center justify-center gap-2">
+          <span className="px-4 py-1 rounded-full bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950 font-black text-xs uppercase tracking-widest shadow-md flex items-center gap-1.5 animate-pulse">
+            <SparklesIcon className="w-3.5 h-3.5" />
+            <span>READY FOR ROUND {roundNumber} (R{roundNumber}) &bull; COMMENCING</span>
+            <SparklesIcon className="w-3.5 h-3.5" />
+          </span>
+        </div>
+
+        <div className="space-y-1">
+          <h2 className="text-2xl sm:text-3xl font-black gold-gradient-text uppercase tracking-wide">
+            Round {roundNumber} &bull; R{roundNumber} is Now Active!
+          </h2>
+          <p className={`text-xs sm:text-sm font-semibold max-w-lg mx-auto leading-relaxed ${isDark ? 'text-slate-200' : 'text-slate-700'}`}>
+            Fresh royal chits dealt face-down to all players &bull; Get ready for deduction.
+          </p>
+        </div>
       </div>
 
       {/* Your Dealt Role Card Snippet */}

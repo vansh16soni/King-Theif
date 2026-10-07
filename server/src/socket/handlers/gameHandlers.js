@@ -7,7 +7,7 @@ const { generateBotGuess, generateBotChatMessage } = require('../../services/bot
 const BOT_THINK_DELAY_MS = () => 1200 + Math.random() * 2000; // 1.2-3.2s
 const GUESS_TIME_LIMIT_SEC = 25;
 const NEXT_ROUND_DELAY_MS = 5000; // 5 seconds review before next round begins
-const ROUND_START_PAUSE_MS = 3500; // 3.5 seconds pause/view when a new round (e.g. R2) starts
+const ROUND_START_PAUSE_MS = 4000; // 4 seconds pause/view when a new round (e.g. R2) starts
 
 function playerKey(p) {
   return p.userId || p.socketId || p.username;
@@ -15,8 +15,8 @@ function playerKey(p) {
 
 /**
  * Begin a new round: increment counter, deal roles, notify each player of
- * their own role privately, provide a 3.5s pause/view to view round start (R2),
- * then reveal Raja and hand control to Mantri with full 25s timer.
+ * their own role privately, provide a 4s pause/view to view round start (R2),
+ * previous Mantri guess outcome, then reveal Raja and hand control to Mantri with full 25s timer.
  */
 async function startRound(io, roomCode) {
   const memRoom = getRoom(roomCode);
@@ -45,7 +45,7 @@ async function startRound(io, roomCode) {
   const chits = dealRoles(memRoom.players);
   memRoom.currentChits = chits;
 
-  // Privately tell each player their role + chit with pause info
+  // Privately tell each player their role + chit with pause info & last round outcome
   Object.entries(chits).forEach(([role, info]) => {
     if (info.socketId) {
       io.to(info.socketId).emit('game:round_start', {
@@ -53,7 +53,8 @@ async function startRound(io, roomCode) {
         totalRounds: memRoom.totalRounds,
         yourRole: role,
         yourChit: role,
-        pauseDurationMs: ROUND_START_PAUSE_MS
+        pauseDurationMs: ROUND_START_PAUSE_MS,
+        lastRoundOutcome: memRoom.lastRoundOutcome || null
       });
     }
   });
@@ -62,10 +63,11 @@ async function startRound(io, roomCode) {
   io.to(roomCode).emit('game:round_starting', {
     roundNumber: memRoom.currentRound,
     totalRounds: memRoom.totalRounds,
-    pauseDurationMs: ROUND_START_PAUSE_MS
+    pauseDurationMs: ROUND_START_PAUSE_MS,
+    lastRoundOutcome: memRoom.lastRoundOutcome || null
   });
 
-  // Pause for 3.5 seconds to display the "Round X (Rx) Started" view before deduction countdown begins
+  // Pause for 4 seconds to display the "Round X (Rx) Started" view before deduction countdown begins
   memRoom.roundIntroTimer = setTimeout(() => {
     if (!memRoom.currentChits) return;
 
@@ -187,11 +189,39 @@ async function resolveGuess(io, roomCode, guess) {
     memRoom.scores[key] = (memRoom.scores[key] || 0) + r.points;
   });
 
-  io.to(roomCode).emit('game:guess_result', { isCorrect, points, isTimeout });
+  const mantriPlayer = memRoom.players.find(p => playerKey(p) === result.mantri.playerId);
+  const chorPlayer = memRoom.players.find(p => playerKey(p) === result.chor.playerId);
+  const sipahiPlayer = memRoom.players.find(p => playerKey(p) === result.sipahi.playerId);
+  const guessedChorPlayer = memRoom.players.find(p => playerKey(p) === guess.chorPlayerId);
+
+  memRoom.lastRoundOutcome = {
+    roundNumber: memRoom.currentRound,
+    isCorrect: !!isCorrect,
+    isTimeout: !!isTimeout,
+    mantriUsername: result.mantri.username || mantriPlayer?.username || 'Mantri',
+    chorUsername: result.chor.username || chorPlayer?.username || 'Chor',
+    sipahiUsername: result.sipahi.username || sipahiPlayer?.username || 'Sipahi',
+    guessedChorUsername: guessedChorPlayer?.username || null,
+    points
+  };
+
+  io.to(roomCode).emit('game:guess_result', {
+    isCorrect: !!isCorrect,
+    points,
+    isTimeout: !!isTimeout,
+    mantriUsername: memRoom.lastRoundOutcome.mantriUsername,
+    chorUsername: memRoom.lastRoundOutcome.chorUsername,
+    guessedChorUsername: memRoom.lastRoundOutcome.guessedChorUsername
+  });
   io.to(roomCode).emit('game:round_end', {
     roundData: result,
     scores: memRoom.scores,
-    isTimeout,
+    isTimeout: !!isTimeout,
+    isCorrect: !!isCorrect,
+    mantriUsername: memRoom.lastRoundOutcome.mantriUsername,
+    chorUsername: memRoom.lastRoundOutcome.chorUsername,
+    guessedChorUsername: memRoom.lastRoundOutcome.guessedChorUsername,
+    lastRoundOutcome: memRoom.lastRoundOutcome,
     nextRoundInSec: NEXT_ROUND_DELAY_MS / 1000
   });
 
